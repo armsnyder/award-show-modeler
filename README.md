@@ -1,15 +1,10 @@
 # NLP
 ## Golden Globes
-Golden Globes Natural Language Processor
-
-by Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder
-
-Northwestern University
-
-EECS 337
-
-Professor Lawrence Birnbaum
-
+Golden Globes Natural Language Processor  
+by Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder  
+Northwestern University  
+EECS 337  
+Professor Lawrence Birnbaum  
 11 February 2015
 
 The main executable file is goldenglobes.py, which will take some command line arguments, one of which will certainly be
