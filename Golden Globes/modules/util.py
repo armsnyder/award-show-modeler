@@ -4,4 +4,4 @@ import sys
 
 
 def warning(text):
-    print "WARNING:", sys.stdout.write(text)
+    sys.stderr.write("WARNING: "+text+"\n")

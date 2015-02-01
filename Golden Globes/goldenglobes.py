@@ -1,4 +1,4 @@
-#!~/anaconda/bin/
+#!/Users/flame/anaconda/bin/python
 # Golden Globes Natural Language Processor
 # by Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder
 # Northwestern University
@@ -13,7 +13,7 @@
 import sys
 
 import modules.util as util
-from modules.parser import parse_tweets
+from modules.parser import load_tweets
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -31,14 +31,12 @@ def main():
     args = sys.argv[1:]
     if not args:
         print util.correct_usage
-
-    # Just some mock skeleton code...
-    # None of these functions are defined yet
-    load_tweets(args(0))
-    parse_tweets()
+        sys.exit(1)
+    load_tweets(args[0])
     sort_tweets()
     build_model()
     print_results()
+
 
 if __name__ == '__main__':
     main()

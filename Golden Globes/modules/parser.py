@@ -1,19 +1,19 @@
 import sys
 import os
-import ujson
 import nltk
+import json
 from util import warning
 
 
-def parse_tweets(filename):
-    if valid_file(filename):
-        ujson.load(filename)
-    else:
+def load_tweets(filename):
+    if not os.path.isfile(filename):
         warning("Not a valid filename: "+filename)
         sys.exit(1)
-    sys.exit(0)
+    with open(filename, 'r') as json_file:
+        for line in json_file:
+            parse_tweet(json.loads(line))
     return
 
 
-def valid_file(filename):
-    return os.path.isfile(filename)
+def parse_tweet(json_tweet):
+    return
