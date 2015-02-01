@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!~/anaconda/bin/
 # Golden Globes Natural Language Processor
 # by Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder
 # Northwestern University
@@ -13,6 +13,7 @@
 import sys
 
 import modules.util as util
+from modules.parser import parse_tweets
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
