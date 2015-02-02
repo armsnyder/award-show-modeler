@@ -1,6 +1,6 @@
 This folder contains a number of small samples of the corput for testing purposes. These samples were generated using the sampler.py script in the modules file.
 
-The format of the file names is: [base]\_[detail]\_[id]\_[lines] where  
+The format of the file names is: [base]\_[detail]\_[id]\_[lines].json where  
   [base] is the name of the original corpus,  
   [detail] is a number from 1-3 signifying the size of each JSON object in the file,  
   [id] is a unique number, and  
