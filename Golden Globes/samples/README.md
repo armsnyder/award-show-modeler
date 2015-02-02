@@ -1,4 +1,4 @@
-This folder contains a number of small samples of the corput for testing purposes. These samples were generated using the sampler.py script in the modules file.
+This folder contains a number of small samples of the corpus for testing purposes. These samples were generated using the sampler.py script in the modules file.
 
 The format of the file names is: [base]\_[detail]\_[id]\_[lines].json where  
   [base] is the name of the original corpus,  
