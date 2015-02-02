@@ -1,6 +1,5 @@
 import sys
 import os
-import nltk
 import json
 from util import warning
 
