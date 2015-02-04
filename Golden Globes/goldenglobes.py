@@ -10,10 +10,9 @@
 # as much as possible by defining functions and classes externally in the modules folder so that we can all be working
 # on the project simultaneously with as little conflict as possible.
 
-import sys
-
+import modules.cmd_line as cmd_line
+from modules.Database import Database
 import modules.util as util
-from modules.parser import load_tweets
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -28,14 +27,8 @@ def main():
     Command line arguments:
     twitter_json -- a JSON formatted database of tweets
     """
-    args = sys.argv[1:]
-    if not args:
-        print util.correct_usage
-        sys.exit(1)
-    load_tweets(args[0])
-    sort_tweets()
-    build_model()
-    print_results()
+
+    db = Database(cmd_line.args.database, cmd_line.args.collection)
 
 
 if __name__ == '__main__':

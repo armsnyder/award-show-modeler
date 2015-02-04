@@ -108,14 +108,14 @@ def print_sample(sample):
     if sample_type == 2:
         for time, text in sample:
             u_text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
-            f_text = re.sub('\s+', ' ', u_text)
+            f_text = re.sub(r'\s+', ' ', u_text)
             if f_text:
                 i += 1
             f.write(time+'   '+f_text+'\n')
     if sample_type == 3:
         for time, text, username in sample:
             u_text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
-            f_text = re.sub('\s+', ' ', u_text)
+            f_text = re.sub(r'\s+', ' ', u_text)
             if f_text:
                 i += 1
             f.write(time+'  '+username+':  '+f_text+'\n')
