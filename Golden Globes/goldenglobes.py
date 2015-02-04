@@ -30,6 +30,7 @@ def main():
 
     db = Database(cmd_line.args.database, cmd_line.args.collection)
 
+    print "nerrrds"
 
 if __name__ == '__main__':
     main()
