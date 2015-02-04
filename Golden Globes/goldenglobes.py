@@ -29,7 +29,8 @@ def main():
     """
 
     db = Database(cmd_line.args.database, cmd_line.args.collection)
-
+    raw_input('Shall we begin execution? ')
+    print 'yay!'
 
 if __name__ == '__main__':
     main()
