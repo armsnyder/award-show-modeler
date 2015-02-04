@@ -6,6 +6,7 @@ import pymongo
 import os
 import re
 import json
+import threading
 
 from util import vprint
 from util import warning
@@ -54,12 +55,12 @@ class Database:
         vprint('Loading tweets into database...')
         if not os.path.isfile(self.json_name):
             warning('The requested file does not exist: %s' % self.json_name, exit=True)
-        f = open(self.json_name, 'r')
-        for tweet in f:
-            tweet_json = json.loads(tweet)
-            data = Database.load_tweet_json(tweet_json)
-            self.collection.insert(data)
-        vprint('Tweets loaded successfully')
+        write_process = threading.Thread(target=self.write_tweets_thread)
+        write_process.start()
+        while write_process.is_alive():
+            write_process.join(5)
+            vprint('Writing tweets... %d' % self.i)
+        vprint('Finished writing tweets!')
         return
 
     @staticmethod
@@ -85,3 +86,17 @@ class Database:
         if not match:
             result += '.json'
         return result
+
+
+    def write_tweets_thread(self):
+        with open(self.json_name, 'r') as f:
+            self.i = 0
+            for tweet in f:
+                tweet_json = json.loads(tweet)
+                data = Database.load_tweet_json(tweet_json)
+                self.collection.insert(data)
+                self.i += 1
+        return
+
+    def fetch_tweets(self, index, limit):
+        return
