@@ -22,7 +22,7 @@ def warning(text, exit=False, status=1):
 
 
 def close(var):
-    """for debugging, exists program and outputs some variable"""
+    """for debugging, exits program and outputs some variable"""
     print var
     sys.exit(0)
 

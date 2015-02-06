@@ -6,17 +6,21 @@ import pymongo
 import os
 import re
 import json
+import threading
+import util
 
 from util import vprint
 from util import warning
+from ProgressBar import ProgressBar
 
 
 class Database:
 
     def __init__(self, db, collection):
-        self.conn = 0
-        self.db = 0
-        self.collection = 0
+        self.conn = None  # stores the mongo client object
+        self.db = None  # stores the database we connect to
+        self.collection = None  # stores the tweet table
+        self.i = 0  # used as a counter for multithreaded write operation
         self.collection_name = self.format_collection_name(collection)
         self.json_name = self.format_json_name(collection)
         self.connect()
@@ -46,20 +50,29 @@ class Database:
     def load_collection(self):
         if self.collection_name not in self.db.collection_names():
             self.write_tweets()
+        else:
+            self.collection = self.db[self.collection_name]
         return
 
     def write_tweets(self):
         """loads tweets from a JSON file and writes them to the database"""
         self.collection = self.db[self.collection_name]
-        vprint('Loading tweets into database...')
+        vprint('Preparing to load tweets...')
         if not os.path.isfile(self.json_name):
             warning('The requested file does not exist: %s' % self.json_name, exit=True)
-        f = open(self.json_name, 'r')
-        for tweet in f:
-            tweet_json = json.loads(tweet)
-            data = Database.load_tweet_json(tweet_json)
-            self.collection.insert(data)
-        vprint('Tweets loaded successfully')
+        total_tweets = sum(1 for line in open(self.json_name, 'r'))
+        bar = ProgressBar('Loading Tweets', total_tweets)
+        with open(self.json_name, 'r') as f:
+            i = 0
+            for tweet in f:
+                tweet_json = json.loads(tweet)
+                data = Database.load_tweet_json(tweet_json)
+                self.collection.insert(data)
+                i += 1
+                if not i % 1000:
+                    bar.set_progress(i)
+        bar.end_progress()
+        vprint('Finished writing tweets!')
         return
 
     @staticmethod
@@ -85,3 +98,8 @@ class Database:
         if not match:
             result += '.json'
         return result
+
+    def find(self, regex):
+        if isinstance(regex, basestring):
+            pattern = re.compile(regex)
+            return self.collection.find({"text": pattern})
