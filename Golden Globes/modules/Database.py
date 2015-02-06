@@ -100,5 +100,6 @@ class Database:
         return result
 
     def find(self, regex):
-        if isinstance(regex, re._pattern_type):
-            return self.collection.find({"text": regex})
+        if isinstance(regex, basestring):
+            pattern = re.compile(regex)
+            return self.collection.find({"text": pattern})
