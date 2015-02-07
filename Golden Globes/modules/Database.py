@@ -48,10 +48,14 @@ class Database:
         return
 
     def load_collection(self, force_reload):
-        if self.collection_name not in self.db.collection_names() or force_reload:
+        if self.collection_name not in self.db.collection_names():
             self.write_tweets()
         else:
             self.collection = self.db[self.collection_name]
+            if force_reload:
+                vprint('Deleting collection')
+                self.collection.drop()
+                self.write_tweets()
         return
 
     def write_tweets(self):
