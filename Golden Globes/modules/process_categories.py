@@ -10,3 +10,6 @@ def zinger():
     for i in a:
         print("real quick")
     return
+
+def flame():
+    print 'it\'s me flame'
