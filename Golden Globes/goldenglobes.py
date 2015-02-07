@@ -31,7 +31,7 @@ def main():
     twitter_json -- a JSON formatted database of tweets
     """
 
-    db = Database(cmd_line.args.database, cmd_line.args.collection)
+    db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
     raw_input('Shall we begin execution? ')
     process_tweets(db, result)

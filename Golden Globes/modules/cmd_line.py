@@ -20,6 +20,9 @@ group.add_argument('-t', '--twitter_json', dest='collection', metavar='TWITTER_J
                    help='JSON file holding tweet objects. If specified, will attempt to load the JSON objects therein '
                         'into a collection by the same name.')
 
+parser.add_argument('-f', '--force_reload', action='store_true',
+                    help='Force reloading tweets JSON into mongoDB')
+
 args = parser.parse_args()
 
 if args.verbose:

@@ -16,7 +16,7 @@ from ProgressBar import ProgressBar
 
 class Database:
 
-    def __init__(self, db, collection):
+    def __init__(self, db, collection, force_reload):
         self.conn = None  # stores the mongo client object
         self.db = None  # stores the database we connect to
         self.collection = None  # stores the tweet table
@@ -25,7 +25,7 @@ class Database:
         self.json_name = self.format_json_name(collection)
         self.connect()
         self.access(db)
-        self.load_collection()
+        self.load_collection(force_reload)
         return
 
     def connect(self):
@@ -47,8 +47,8 @@ class Database:
         self.db = self.conn[db_name]
         return
 
-    def load_collection(self):
-        if self.collection_name not in self.db.collection_names():
+    def load_collection(self, force_reload):
+        if self.collection_name not in self.db.collection_names() or force_reload:
             self.write_tweets()
         else:
             self.collection = self.db[self.collection_name]
