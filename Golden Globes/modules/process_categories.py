@@ -7,3 +7,4 @@ import util
 
 def flame(is_a_cool_guy):
     print is_a_cool_guy
+    print 'oh no'
