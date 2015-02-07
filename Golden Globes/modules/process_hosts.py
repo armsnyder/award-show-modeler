@@ -2,11 +2,13 @@ import nltk
 import util
 
 
-def process_hosts(db, target):
-    print 'you made it'
+def process_hosts(db, target, limit):
     result = {}
     useful_tweets = db.find('host')
+    i = 0
     for tweet in useful_tweets:
+        if i > limit:
+            break
         tweet_text = tweet['text']
         tokens = nltk.word_tokenize(tweet_text)
         bgs = nltk.bigrams(tokens)
@@ -16,5 +18,6 @@ def process_hosts(db, target):
                     result[name] += 1
                 else:
                     result[name] = 1
-    target.hosts = sorted(result, key=result.get, reverse=True)[0:2]
+        i += 1
+    target.hosts = sorted(result, key=result.get, reverse=True)[0:10]
     return
