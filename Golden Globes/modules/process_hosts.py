@@ -3,7 +3,6 @@ import util
 
 
 def process_hosts(db, target):
-    print 'you made it'
     result = {}
     useful_tweets = db.find('host')
     for tweet in useful_tweets:
