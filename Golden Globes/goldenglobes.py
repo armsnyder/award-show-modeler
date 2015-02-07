@@ -40,7 +40,7 @@ def main():
 
 def process_tweets(db, result):
     """loads tweets into memory and calls helper (multithreaded) functions to process tweets as they arrive"""
-    thread_hosts = threading.Thread(target=process_hosts.process_hosts, args=(db, result))
+    thread_hosts = threading.Thread(target=process_hosts.process_hosts, args=(db, result, 50))
     thread_hosts.start()
     while thread_hosts.is_alive():
         thread_hosts.join(1)
