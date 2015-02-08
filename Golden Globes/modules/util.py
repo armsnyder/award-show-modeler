@@ -21,9 +21,10 @@ def warning(text, exit=False, status=1):
     return
 
 
-def close(var):
+def close(message=None):
     """for debugging, exits program and outputs some variable"""
-    print var
+    if message:
+        print message
     sys.exit(0)
 
 

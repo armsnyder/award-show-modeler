@@ -6,8 +6,6 @@ import pymongo
 import os
 import re
 import json
-import threading
-import util
 
 from util import vprint
 from util import warning

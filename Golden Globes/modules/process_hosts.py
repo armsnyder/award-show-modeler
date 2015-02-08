@@ -1,13 +1,20 @@
+# Processes tweets to find the host names.
+# This is achieved by first getting all tweets containing 'host' and then checking for capitalized bigrams within those
+# tweets. Finally, the results are filtered by popularity to discern which are likely to be names of hosts.
+
+from __future__ import division
 import nltk
-import util
+import operator
+from util import vprint
 
 
-def process_hosts(db, target, limit):
+def run(db, target, limit=None):
+    vprint('Processing hosts...')
     result = {}
     useful_tweets = db.find('host')
     i = 0
     for tweet in useful_tweets:
-        if i > limit:
+        if limit and i > limit:
             break
         tweet_text = tweet['text']
         tokens = nltk.word_tokenize(tweet_text)
@@ -19,5 +26,15 @@ def process_hosts(db, target, limit):
                 else:
                     result[name] = 1
         i += 1
-    target.hosts = sorted(result, key=result.get, reverse=True)[0:10]
+
+    most_popular = None
+    for name, popularity in sorted(result.items(), key=operator.itemgetter(1), reverse=True):
+        if not most_popular:
+            most_popular = popularity
+        percent_popularity = popularity / most_popular
+        if percent_popularity > 0.9:
+            target.hosts.append(name)
+        else:
+            break
+    vprint('Processing hosts finished')
     return
