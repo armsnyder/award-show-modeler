@@ -54,7 +54,7 @@ def process_tweets(db, result):
     while not all_done:
         all_done = True
         for thread in threads.values():
-            thread.join()
+            thread.join(0.1)
             if thread.is_alive():
                 all_done = False
     return
