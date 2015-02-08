@@ -15,6 +15,8 @@ from modules.Database import Database
 import re
 import threading
 import modules.process_hosts as process_hosts
+import modules.process_start_time as process_start_time
+
 from modules.Result import Result
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
@@ -34,7 +36,7 @@ def main():
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
     raw_input('Shall we begin execution? ')
-    process_tweets(db, result)
+    process_start_time.run(db, result)
     result.print_results()
 
 
@@ -47,7 +49,6 @@ def process_tweets(db, result):
         print "Analyzing..."
     return
 
-    print "nerrrds"
 
 if __name__ == '__main__':
     main()
