@@ -1,5 +1,0 @@
-AEST Australian Eastern Standard Time, as UTC+10 hours e.g. Brisbane
-AEDT Australian Eastern Daylight Time, as UTC+11 hours e.g. Canberra during summer
-ACST Australian Central Standard Time, as UTC+9.5 hours e.g. Darwin
-ACDT Australian Central Daylight Time, as UTC+10.5 hours e.g. Adelaide during summer
-AWST Australian Western Standard Time, as UTC+8 hours e.g. Perth
