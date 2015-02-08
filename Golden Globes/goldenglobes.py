@@ -10,13 +10,14 @@
 # as much as possible by defining functions and classes externally in the modules folder so that we can all be working
 # on the project simultaneously with as little conflict as possible.
 
-import modules.cmd_line as cmd_line
-from modules.Database import Database
 import threading
+
+import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
-
+from modules.util import vprint
 from modules.Result import Result
+from modules.Database import Database
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -48,15 +49,19 @@ def process_tweets(db, result):
         'start_time': threading.Thread(target=process_start_time.run, args=(db, result))
     }
 
-    for thread in threads.values():
+    for name, thread in threads.items():
+        vprint('Process ' + name + ' started')
         thread.start()
     all_done = False
     while not all_done:
         all_done = True
-        for thread in threads.values():
+        for name, thread in threads.items():
             thread.join(0.1)
             if thread.is_alive():
                 all_done = False
+            else:
+                vprint('Process ' + name + ' finished')
+                del threads[name]
     return
 
 
