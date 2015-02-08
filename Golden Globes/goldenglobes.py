@@ -12,7 +12,6 @@
 
 import modules.cmd_line as cmd_line
 from modules.Database import Database
-import re
 import threading
 import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
@@ -35,18 +34,29 @@ def main():
 
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
-    raw_input('Shall we begin execution? ')
-    process_start_time.run(db, result)
+    # raw_input('Shall we begin execution? ')
+    process_tweets(db, result)
     result.print_results()
 
 
 def process_tweets(db, result):
-    """loads tweets into memory and calls helper (multithreaded) functions to process tweets as they arrive"""
-    thread_hosts = threading.Thread(target=process_hosts.process_hosts, args=(db, result, 50))
-    thread_hosts.start()
-    while thread_hosts.is_alive():
-        thread_hosts.join(1)
-        print "Analyzing..."
+    """Calls helper (multithreaded) functions to process tweets as they arrive"""
+
+    # To add new processes, just add to the threads dictionary defined here:
+    threads = {
+        'hosts': threading.Thread(target=process_hosts.run, args=(db, result)),
+        'start_time': threading.Thread(target=process_start_time.run, args=(db, result))
+    }
+
+    for thread in threads.values():
+        thread.start()
+    all_done = False
+    while not all_done:
+        all_done = True
+        for thread in threads.values():
+            thread.join()
+            if thread.is_alive():
+                all_done = False
     return
 
 

@@ -6,10 +6,12 @@
 import re
 import datetime
 from dateutil import tz
+from util import vprint
 
 
 def run(db, target):
-    u_result = {}
+    vprint('Processing start time...')
+    result = {}
     pattern = re.compile(optional_space(target.show_name) + r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
     useful_tweets = db.collection.find({"text": pattern})
     utc_zone = tz.gettz('UTC')
@@ -26,11 +28,12 @@ def run(db, target):
             .replace(tzinfo=utc_zone).astimezone(from_zone)
         res_time = datetime.datetime(tweet_time.year, tweet_time.month, tweet_time.day, hour, tzinfo=from_zone)\
             .astimezone(utc_zone)
-        if res_time in u_result:
-            u_result[res_time] += 1
+        if res_time in result:
+            result[res_time] += 1
         else:
-            u_result[res_time] = 1
-    target.start_time = sorted(u_result, reverse=True)[0]
+            result[res_time] = 1
+    target.start_time = sorted(result, key=result.get, reverse=True)[0]
+    vprint('Processing start time finished')
     return
 
 
