@@ -17,6 +17,7 @@ class Result:
         print '||       RESULTS       ||'
         print '*************************'
         print self.hosts_string()
+        print ''
         return
 
     @staticmethod
