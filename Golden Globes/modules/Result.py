@@ -1,15 +1,35 @@
 # Stores the final results in whatever form we choose and defines functions to interpret results
 
+# Results that are already filled in are optional. We can make processes to extract them later if we're feeling
+# ambitious.
+
 
 class Result:
     def __init__(self):
         self.show_name = 'Golden Globes'
+        self.categories = [
+            'Best Motion Picture - Drama',
+            'Best Motion Picture - Musical or Comedy',
+            'Best Director',
+            'Best Actor - Motion Picture Drama',
+            'Best Actor - Motion Picture Musical or Comedy',
+            'Best Actress - Motion Picture Drama',
+            'Best Actress - Motion Picture Musical or Comedy',
+            'Best Supporting Actor - Motion Picture',
+            'Best Supporting Actress - Motion Picture',
+            'Best Screenplay',
+            'Best Original Score',
+            'Best Original Song',
+            'Best Foreign Language Film',
+            'Best Animated Feature Film',
+            'Cecil B. DeMille Award for Lifetime Achievement in Motion Pictures'
+        ]
+        self.start_time = None
         self.hosts = []
-        self.winners = {}
-        self.awards = {}
+        self.winning_films = {}
+        self.winning_people = {}
         self.presenters = {}
         self.nominees = {}
-        self.start_time = {}
 
     def print_results(self):
         print ''

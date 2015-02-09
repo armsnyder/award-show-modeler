@@ -10,13 +10,15 @@
 # as much as possible by defining functions and classes externally in the modules folder so that we can all be working
 # on the project simultaneously with as little conflict as possible.
 
-import modules.cmd_line as cmd_line
-from modules.Database import Database
 import threading
+
+import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
-
+import modules.process_winners as process_winners
 from modules.Result import Result
+from modules.Database import Database
+from modules.util import vprint
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -42,21 +44,34 @@ def main():
 def process_tweets(db, result):
     """Calls helper (multithreaded) functions to process tweets as they arrive"""
 
-    # To add new processes, just add to the threads dictionary defined here:
-    threads = {
-        'hosts': threading.Thread(target=process_hosts.run, args=(db, result)),
-        'start_time': threading.Thread(target=process_start_time.run, args=(db, result))
-    }
+    # Define events that allow threads to communicate and wait for one another:
+    event_names = ['start_time_set']
 
-    for thread in threads.values():
-        thread.start()
-    all_done = False
-    while not all_done:
-        all_done = True
-        for thread in threads.values():
-            thread.join(0.1)
-            if thread.is_alive():
-                all_done = False
+    events = {}
+    for event_name in event_names:
+        events[event_name] = threading.Event()
+
+    # To add new processes, start new threads like so:
+    threading.Thread(name='Process Hosts',
+                     target=process_hosts.run,
+                     args=(db, result)).start()
+    threading.Thread(name='Process Start Time',
+                     target=process_start_time.run,
+                     args=(db, result, events['start_time_set'])).start()
+    threading.Thread(name='Process Winners',
+                     target=process_winners.run,
+                     args=(db, result, events['start_time_set'])).start()
+
+    main_thread = threading.currentThread()
+    for thread in threading.enumerate():
+        if thread is main_thread:
+            continue
+        vprint('%s starting' % thread.name)
+    for thread in threading.enumerate():
+        if thread is main_thread:
+            continue
+        thread.join()
+        vprint('%s finished' % thread.name)
     return
 
 
