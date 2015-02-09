@@ -5,11 +5,9 @@
 from __future__ import division
 import nltk
 import operator
-from util import vprint
 
 
 def run(db, target, limit=None):
-    vprint('Processing hosts...')
     result = {}
     useful_tweets = db.find('host')
     i = 0
@@ -36,5 +34,4 @@ def run(db, target, limit=None):
             target.hosts.append(name)
         else:
             break
-    vprint('Processing hosts finished')
     return

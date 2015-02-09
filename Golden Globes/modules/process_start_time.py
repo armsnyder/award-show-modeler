@@ -6,11 +6,9 @@
 import re
 import datetime
 from dateutil import tz
-from util import vprint
 
 
 def run(db, target):
-    vprint('Processing start time...')
     result = {}
     pattern = re.compile(optional_space(target.show_name) + r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
     useful_tweets = db.collection.find({"text": pattern})
@@ -33,7 +31,6 @@ def run(db, target):
         else:
             result[res_time] = 1
     target.start_time = sorted(result, key=result.get, reverse=True)[0]
-    vprint('Processing start time finished')
     return
 
 
