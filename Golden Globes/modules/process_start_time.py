@@ -8,12 +8,15 @@ import datetime
 from dateutil import tz
 
 
-def run(db, target):
+def run(db, target, limit=None):
     result = {}
     pattern = re.compile(optional_space(target.show_name) + r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
     useful_tweets = db.collection.find({"text": pattern})
     utc_zone = tz.gettz('UTC')
+    i = 0
     for tweet in useful_tweets:
+        if limit and i > limit:
+            break
         tweet_text = tweet['text']
         match = pattern.search(tweet_text)
         from_zone = tz.gettz(match.group(3))
@@ -30,6 +33,8 @@ def run(db, target):
             result[res_time] += 1
         else:
             result[res_time] = 1
+        i += 1
+
     target.start_time = sorted(result, key=result.get, reverse=True)[0]
     return
 
