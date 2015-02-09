@@ -105,3 +105,4 @@ class Database:
         if isinstance(regex, basestring):
             pattern = re.compile(regex)
             return self.collection.find({"text": pattern})
+        else: warning('Bad RE')

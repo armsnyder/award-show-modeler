@@ -11,8 +11,8 @@ class Result:
             'Best Motion Picture - Drama',
             'Best Motion Picture - Musical or Comedy',
             'Best Director',
-            'Best Actor - Motion Picture Drama',
-            'Best Actor - Motion Picture Musical or Comedy',
+            'Best Performance by an Actor in a Motion Picture - Drama',
+            'Best Performance by an Actor in a Motion Picture - Comedy or Musical',
             'Best Actress - Motion Picture Drama',
             'Best Actress - Motion Picture Musical or Comedy',
             'Best Supporting Actor - Motion Picture',
@@ -23,6 +23,8 @@ class Result:
             'Best Foreign Language Film',
             'Best Animated Feature Film',
             'Cecil B. DeMille Award for Lifetime Achievement in Motion Pictures'
+            'Best Television Series - Drama'
+            'Best Actress in a Television',
         ]
         self.start_time = None
         self.hosts = []

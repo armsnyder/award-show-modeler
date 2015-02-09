@@ -5,6 +5,7 @@
 from __future__ import division
 import nltk
 import operator
+import util
 
 
 def run(db, target, limit=None):
@@ -30,7 +31,7 @@ def run(db, target, limit=None):
         if not most_popular:
             most_popular = popularity
         percent_popularity = popularity / most_popular
-        if percent_popularity > 0.9:
+        if percent_popularity > util.host_threshold:
             target.hosts.append(name)
         else:
             break
