@@ -15,10 +15,11 @@ import threading
 import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
-import modules.process_winners as process_winners
+import modules.process_winners_4 as process_winners
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint
+import sys
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -36,6 +37,8 @@ def main():
 
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
+    process_winners.run(db, result)
+    sys.exit(0)
     # raw_input('Shall we begin execution? ')
     process_tweets(db, result)
     result.print_results()
