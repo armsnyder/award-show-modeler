@@ -18,6 +18,7 @@ import modules.process_start_time as process_start_time
 import modules.process_winners as process_winners
 from modules.Result import Result
 from modules.Database import Database
+from modules.util import vprint
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -51,15 +52,26 @@ def process_tweets(db, result):
         events[event_name] = threading.Event()
 
     # To add new processes, start new threads like so:
-    threading.Thread(target=process_hosts.run, args=(db, result)),
-    threading.Thread(target=process_start_time.run, args=(db, result, events['start_time_set']))
-    threading.Thread(target=process_winners.run, args=(db, result, events['start_time_set']))
+    threading.Thread(name='Process Hosts',
+                     target=process_hosts.run,
+                     args=(db, result)).start()
+    threading.Thread(name='Process Start Time',
+                     target=process_start_time.run,
+                     args=(db, result, events['start_time_set'])).start()
+    threading.Thread(name='Process Winners',
+                     target=process_winners.run,
+                     args=(db, result, events['start_time_set'])).start()
 
     main_thread = threading.currentThread()
     for thread in threading.enumerate():
         if thread is main_thread:
             continue
+        vprint('%s starting' % thread.name)
+    for thread in threading.enumerate():
+        if thread is main_thread:
+            continue
         thread.join()
+        vprint('%s finished' % thread.name)
     return
 
 
