@@ -3,8 +3,8 @@
 import re
 
 
-def run(db, target, limit=None):
-    # while not target.start_time: TODO: Make thread sleep
+def run(db, target, event, limit=None):
+    event.wait()
     result = {}
     pattern = re.compile(r'best', re.I)
     useful_tweets = db.collection.find({

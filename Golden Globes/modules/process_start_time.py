@@ -8,7 +8,7 @@ import datetime
 from dateutil import tz
 
 
-def run(db, target, limit=None):
+def run(db, target, event, limit=None):
     result = {}
     pattern = re.compile(optional_space(target.show_name) + r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
     useful_tweets = db.collection.find({"text": pattern})
@@ -36,7 +36,7 @@ def run(db, target, limit=None):
         i += 1
 
     target.start_time = sorted(result, key=result.get, reverse=True)[0]
-    return
+    event.set()
 
 
 def optional_space(text):
