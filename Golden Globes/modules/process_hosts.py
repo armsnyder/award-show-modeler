@@ -6,12 +6,15 @@ from __future__ import division
 import nltk
 import operator
 
+import util
+import regex
+
 
 def run(db, target, limit=None):
     result = {}
-    useful_tweets = db.find('host')
+    cursor = db.collection.find({'text': regex.hosts})
     i = 0
-    for tweet in useful_tweets:
+    for tweet in cursor:
         if limit and i > limit:
             break
         tweet_text = tweet['text']
@@ -25,12 +28,13 @@ def run(db, target, limit=None):
                     result[name] = 1
         i += 1
 
+    # This part ensured only the most popular hits are returned
     most_popular = None
     for name, popularity in sorted(result.items(), key=operator.itemgetter(1), reverse=True):
         if not most_popular:
             most_popular = popularity
         percent_popularity = popularity / most_popular
-        if percent_popularity > 0.9:
+        if percent_popularity > util.host_threshold:
             target.hosts.append(name)
         else:
             break

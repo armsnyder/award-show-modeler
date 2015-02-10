@@ -15,7 +15,8 @@ import threading
 import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
-import modules.process_winners_4 as process_winners
+import modules.process_winners as process_winners
+import modules.process_nominees as process_nominees
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint
@@ -37,8 +38,6 @@ def main():
 
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
-    process_winners.run(db, result)
-    sys.exit(0)
     # raw_input('Shall we begin execution? ')
     process_tweets(db, result)
     result.print_results()
@@ -61,9 +60,13 @@ def process_tweets(db, result):
     threading.Thread(name='Process Start Time',
                      target=process_start_time.run,
                      args=(db, result, events['start_time_set'])).start()
+    # threading.Thread(name='Process Nominees',
+    #                  target=process_nominees.run,
+    #                  args=(db, result)).start()
     threading.Thread(name='Process Winners',
                      target=process_winners.run,
                      args=(db, result, events['start_time_set'])).start()
+
 
     main_thread = threading.currentThread()
     for thread in threading.enumerate():
