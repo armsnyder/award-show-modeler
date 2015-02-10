@@ -1,18 +1,15 @@
 # Processes tweets to find the nominees
+# Produces ordered list of tuples representing most popular names (as defined by regex.name) appearing in tweets
+# matched by regex.subjunctive
+# TODO: Match to categories (Zinger)
+
+import operator
 
 import regex
-import re
-import nltk
-import datetime
-from dateutil import tz
-import operator
-import imdb
-imdb_access = imdb.IMDb()
 
 
 def run(db, target):
     names = {}
-    i = 0
     cursor = db.collection.find({"text": regex.subjunctive})
 # with open('C:\\Users\\Neal\\Documents\\Coursework\\EECS\\337\\scratch1.txt', 'w') as f:
     for tweet in cursor:
@@ -25,8 +22,6 @@ def run(db, target):
         else:
             continue
     print sorted(names.items(), key=operator.itemgetter(1), reverse=True)
-
-# TODO: weed out winners, assign categories
 
 
 def weed_out(name, target):

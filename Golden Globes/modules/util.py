@@ -10,6 +10,7 @@ default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 host_threshold = 0.9
 show_name = 'Golden Globes'
 
+
 # -- METHODS -- #
 
 def warning(text, exit=False, status=1):

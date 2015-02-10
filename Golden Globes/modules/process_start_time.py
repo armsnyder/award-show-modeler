@@ -2,9 +2,11 @@
 # Currently way too slow and should definitely be optimized.
 # Works by pulling tweets that match a regex, then with each tweet, creating a datetime that refers to the tweet's
 # proclaimed start time, also using some timezone conversions.
+# It works. It's done.
 
 import datetime
 from dateutil import tz
+
 import regex
 
 
@@ -35,4 +37,4 @@ def run(db, target, event, limit=None):
         i += 1
 
     target.start_time = sorted(result, key=result.get, reverse=True)[0]
-    event.set()
+    event.set()  # Tells other threads that rely on a start time that it has been set

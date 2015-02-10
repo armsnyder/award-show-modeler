@@ -10,8 +10,14 @@ def optional_space(text):
     return text.replace(' ', ' ?')
 
 name = re.compile(r'\b(?!Golden|Best)([A-Z]([a-z]+|[.A-Z] ?){1,3} )[A-Z][a-z]+')
-subjunctive = re.compile(r'\bhope|\bwish|\bwant', re.I)
+subjunctive = re.compile(r'\bhope|\bwish|\bwant|\bshould', re.I)
 congrat = re.compile(r'congrats|congratulations', re.I)
+
+
+# -- Hosts -- #
+
+hosts = re.compile(r'host', re.I)
+
 
 # -- Starting Time -- #
 
@@ -25,7 +31,7 @@ nominees = re.compile(r'\bnomi?')
 
 #  -- Winners -- #
 
-winners = re.compile(r'\b(won|wins)(.*)\bfor\b(.*)')
+winners = re.compile(r'(.*)\b(won|wins)(.*)\bfor\b(.*)')
 
 
 # -- Obscure -- #

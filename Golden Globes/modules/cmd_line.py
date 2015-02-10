@@ -1,4 +1,5 @@
 # Code for interfacing with command line arguments passed to our program
+# Don't worry about understanding this.
 
 import argparse
 import util

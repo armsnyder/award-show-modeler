@@ -1,4 +1,6 @@
 # Database object, used for managing connections, loading tweets
+# Don't worry too much about understanding this one. Just look at how the Database object is interfaced with in the
+# already-written modules, often referred to as 'db'
 
 # TODO: Add methods for reading tweets from database
 
@@ -100,9 +102,3 @@ class Database:
         if not match:
             result += '.json'
         return result
-
-    def find(self, regex):
-        if isinstance(regex, basestring):
-            pattern = re.compile(regex)
-            return self.collection.find({"text": pattern})
-        else: warning('Bad RE')
