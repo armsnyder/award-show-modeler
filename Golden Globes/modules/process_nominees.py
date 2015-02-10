@@ -26,7 +26,7 @@ def run(db, target):
             continue
     print sorted(names.items(), key=operator.itemgetter(1), reverse=True)
 
-# TODO:
+# TODO: weed out winners, assign categories
 
 
 def weed_out(name, target):
