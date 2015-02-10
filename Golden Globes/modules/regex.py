@@ -9,6 +9,8 @@ import util
 def optional_space(text):
     return text.replace(' ', ' ?')
 
+def is_name
+
 subjunctive = re.compile(r'\bhope|\bwish|\bwant', re.I)
 congrat = re.compile(r'congrats|congratulations', re.I)
 
@@ -17,8 +19,16 @@ congrat = re.compile(r'congrats|congratulations', re.I)
 time = re.compile(optional_space(util.show_name) + r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
 
 
-# -- Winners -- #
+# -- Nominees -- #
 
-winners = re.compile(r'\bwins(.*)\bfor\b(.*)')
+nominees = re.compile(r'\bnomi?')
 
 
+#  -- Winners -- #
+
+winners = re.compile(r'\b(won|wins)(.*)\bfor\b(.*)')
+
+
+# -- Obscure -- #
+
+israel = re.compile(r'(?=.*\bEthan Hawke\b)(?=.*\bMark Ruffalo\b).*', re.I)
