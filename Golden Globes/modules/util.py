@@ -8,6 +8,7 @@ verbose = True  # if True, will FORCE print out of additional debug messages usi
 default_collection = 'samples/goldenglobes2015_2_05_386000.json'  # default tweet JSON
 default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 host_threshold = 0.9
+show_name = 'Golden Globes'
 
 # -- METHODS -- #
 
