@@ -59,6 +59,6 @@ class Result:
             for win_for in value['win_for']:
                 f += '\t\t'
                 for win_for_e in win_for:
-                    f += '('+win_for_e.encode('utf8')+') 'Ad
+                    f += '('+win_for_e.encode('utf8')+') '
                 f += '\r\n'
         return f
