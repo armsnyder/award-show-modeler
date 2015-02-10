@@ -9,7 +9,6 @@ import util
 def optional_space(text):
     return text.replace(' ', ' ?')
 
-def is_name
 
 subjunctive = re.compile(r'\bhope|\bwish|\bwant', re.I)
 congrat = re.compile(r'congrats|congratulations', re.I)
