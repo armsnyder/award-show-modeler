@@ -9,7 +9,7 @@ import util
 def optional_space(text):
     return text.replace(' ', ' ?')
 
-
+name = re.compile(r'\b(?!Golden|Best)([A-Z]([a-z]+|[.A-Z] ?){1,3} )[A-Z][a-z]+')
 subjunctive = re.compile(r'\bhope|\bwish|\bwant', re.I)
 congrat = re.compile(r'congrats|congratulations', re.I)
 
