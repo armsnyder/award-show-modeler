@@ -55,9 +55,9 @@ def process_tweets(db, result):
     threading.Thread(name='Process Start Time',
                      target=process_start_time.run,
                      args=(db, result, events['start_time_set'])).start()
-    # threading.Thread(name='Process Nominees',
-    #                  target=process_nominees.run,
-    #                  args=(db, result)).start()
+    threading.Thread(name='Process Nominees',
+                     target=process_nominees.run,
+                     args=(db, result)).start()
     threading.Thread(name='Process Winners',
                      target=process_winners.run,
                      args=(db, result, events['start_time_set'])).start()
