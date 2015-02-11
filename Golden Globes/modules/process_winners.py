@@ -1,4 +1,14 @@
 # Processes tweets to find the winners
+# TODO: Make regex for winners match more tweets. Make more robust.
+    # TODO: Suggest looking at all tweets matching r'w[io]n' and finding a better pattern
+# TODO: Apply more NLP to tweet to more accurately figure out...
+    # TODO: "Chunks" of the tweet, with chunk A being the part of the tweet containing the winner's name,
+        # TODO: chunk B being the award name, and chunk C being what film the winner won for...
+    # TODO: Search within each chunk to find the pertinent information
+# TODO: Write a function that takes our bins and collapses them by looking up twitter handles, hashtags, etc
+# TODO: Write a function that tales the collapsed bins and uses statistical analysis to find the real winners
+    # TODO: (possibly using hamming distance)
+
 
 import nltk
 import datetime

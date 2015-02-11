@@ -19,7 +19,7 @@ def run(db, target, limit=None):
             break
         tweet_text = tweet['text']
         tokens = nltk.word_tokenize(tweet_text)
-        bgs = nltk.bigrams(tokens)
+        bgs = nltk.bigrams(tokens)  # TODO: Not robust
         for name in bgs:
             if name[0][0].isupper() and name[1][0].isupper():
                 if name in result:
