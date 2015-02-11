@@ -16,11 +16,9 @@ import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
 import modules.process_winners as process_winners
-import modules.process_nominees as process_nominees
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint
-import sys
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -31,9 +29,6 @@ def main():
     """
     Executes the Golden Globes program, which analyzes a set of tweets and outputs information about the event that
     they are describing.
-
-    Command line arguments:
-    twitter_json -- a JSON formatted database of tweets
     """
 
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
@@ -66,7 +61,6 @@ def process_tweets(db, result):
     threading.Thread(name='Process Winners',
                      target=process_winners.run,
                      args=(db, result, events['start_time_set'])).start()
-
 
     main_thread = threading.currentThread()
     for thread in threading.enumerate():
