@@ -28,6 +28,9 @@ class Database:
         self.load_collection(force_reload)
         return
 
+    def __del__(self):
+        self.conn.disconnect()
+
     def connect(self):
         """establishes connection with mongoDB"""
         try:
