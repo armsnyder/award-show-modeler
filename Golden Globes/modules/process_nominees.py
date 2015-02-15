@@ -4,6 +4,8 @@
 # TODO: Match to categories (Zinger)
 
 import operator
+import imdb
+ia = imdb.IMDb()
 
 import regex
 
@@ -25,8 +27,15 @@ def run(db, target):
 
 
 def weed_out(name, target):
+    hits = ia.search_person(name)
+    if not hits:
+        return True
     if name in target.hosts:
         return True
     if name in target.winning_people:
         return True
     return False
+
+
+def category_search(name, target):
+    return

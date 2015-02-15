@@ -9,8 +9,9 @@ import util
 def optional_space(text):
     return text.replace(' ', ' ?')
 
-name = re.compile(r'\b(?!Golden|Best)([A-Z]([a-z]+|[.A-Z] ?){1,3} )[A-Z][a-z]+')
-subjunctive = re.compile(r'\bhope|\bwish|\bwant|\bshould', re.I)
+# TODO: generalize names for all shows
+name = re.compile(r'\b(?!Golden|Best)([A-Z]([a-z]+|[.A-Z] ?){1,3} )[A-Z][a-z][A-Z]?[a-z]*')
+subjunctive = re.compile(r'\bhop[ei]|\bwish|\bwant|\bshould', re.I)
 congrat = re.compile(r'congrats|congratulations', re.I)
 
 
@@ -31,8 +32,15 @@ nominees = re.compile(r'\bnomi?')
 
 #  -- Winners -- #
 
-winners = re.compile(r'(.*)\b(won|wins)(.*)\bfor\b(.*)')
-
+winners = re.compile(r'(?=.*best)\bw[io]n', re.I)
+best_str = r'(best .+?)(?:!|\.|\?|\bon\b|\bfrom|\bfor|\bat)'
+winner_models = [
+    re.compile(r'([@#]\w+) w[io]ns.*' + best_str, re.I),
+    re.compile(r'\bcongrat.*? (?:to )?(.*?)(?:\bon\b|\bfrom|\bfor).*' + best_str, re.I),
+    re.compile(r'[\.\?!:] (.* )w[io]ns.*' + best_str, re.I),
+    re.compile(r'[#@]\w* (.* )w[io]ns.*' + best_str, re.I),
+    re.compile(r'(.* )w[io]ns.*' + best_str, re.I)
+    ]
 
 # -- Obscure -- #
 

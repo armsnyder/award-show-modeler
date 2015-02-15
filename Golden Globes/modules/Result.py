@@ -49,16 +49,6 @@ class Result:
         for winner, value in self.winner_bins.items():
             if winner:
                 f += winner.encode('utf8')+':\r\n'
-            f += '\tAwards:\r\n'
-            for award, time in value['award']:
-                f += '\t\t'
-                for award_e in award:
-                    f += '('+award_e.encode('utf8')+') '
-                f += '\r\n'
-            f += '\tWins For:\r\n'
-            for win_for in value['win_for']:
-                f += '\t\t'
-                for win_for_e in win_for:
-                    f += '('+win_for_e.encode('utf8')+') '
-                f += '\r\n'
+            for award, time in value:
+                f += '\t'+award.encode('utf8')+'\r\n'
         return f

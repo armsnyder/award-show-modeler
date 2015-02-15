@@ -8,6 +8,7 @@ import datetime
 from dateutil import tz
 
 import regex
+import util
 
 
 def run(db, target, event, limit=None):
@@ -35,6 +36,8 @@ def run(db, target, event, limit=None):
         else:
             result[res_time] = 1
         i += 1
-
-    target.start_time = sorted(result, key=result.get, reverse=True)[0]
+    if result:
+        target.start_time = sorted(result, key=result.get, reverse=True)[0]
+    else:
+        util.warning('Failed to determine event start time')
     event.set()  # Tells other threads that rely on a start time that it has been set
