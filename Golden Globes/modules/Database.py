@@ -2,8 +2,6 @@
 # Don't worry too much about understanding this one. Just look at how the Database object is interfaced with in the
 # already-written modules, often referred to as 'db'
 
-# TODO: Add methods for reading tweets from database
-
 import pymongo
 import os
 import re
