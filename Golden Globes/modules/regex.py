@@ -32,8 +32,15 @@ nominees = re.compile(r'\bnomi?')
 
 #  -- Winners -- #
 
-winners = re.compile(r'(.*)\b(won|wins)(.*)\bfor\b(.*)')
-
+winners = re.compile(r'(?=.*best)\bw[io]n', re.I)
+best_str = r'(best .+?)(?:!|\.|\?|\bon\b|\bfrom|\bfor|\bat)'
+winner_models = [
+    re.compile(r'([@#]\w+) w[io]ns.*' + best_str, re.I),
+    re.compile(r'\bcongrat.*? (?:to )?(.*?)(?:\bon\b|\bfrom|\bfor).*' + best_str, re.I),
+    re.compile(r'[\.\?!:] (.* )w[io]ns.*' + best_str, re.I),
+    re.compile(r'[#@]\w* (.* )w[io]ns.*' + best_str, re.I),
+    re.compile(r'(.* )w[io]ns.*' + best_str, re.I)
+    ]
 
 # -- Obscure -- #
 
