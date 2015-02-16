@@ -8,6 +8,7 @@ import twitter
 # -- FIELDS -- #
 
 verbose = True  # if True, will FORCE print out of additional debug messages using vprint
+search_twitter_handles = False
 default_collection = 'samples/goldenglobes2015_2_05_386000.json'  # default tweet JSON
 default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 host_threshold = 0.9
@@ -21,6 +22,7 @@ twitter_api = twitter.Twitter(
     auth=twitter.oauth.OAuth(twitter_access_token, twitter_access_secret, twitter_key, twitter_secret))
 common_words = set(stopwords.words('english'))
 common_words.update(event_name)
+
 
 # -- METHODS -- #
 
