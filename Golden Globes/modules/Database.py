@@ -2,8 +2,6 @@
 # Don't worry too much about understanding this one. Just look at how the Database object is interfaced with in the
 # already-written modules, often referred to as 'db'
 
-# TODO: Add methods for reading tweets from database
-
 import pymongo
 import os
 import re
@@ -24,9 +22,12 @@ class Database:
         self.collection_name = self.format_collection_name(collection)
         self.json_name = self.format_json_name(collection)
         self.connect()
-        self.access(db)
+        self.access(self.collection_name)
         self.load_collection(force_reload)
         return
+
+    def __del__(self):
+        self.conn.disconnect()
 
     def connect(self):
         """establishes connection with mongoDB"""
@@ -42,7 +43,6 @@ class Database:
         if db_name in self.conn.database_names():
             vprint("Connecting to existing %s database" % db_name)
         else:
-            vprint("Database %s found" % db_name)
             vprint("Initializing new %s database" % db_name)
         self.db = self.conn[db_name]
         return
