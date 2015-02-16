@@ -22,7 +22,7 @@ hosts = re.compile(r'host', re.I)
 
 # -- Starting Time -- #
 
-time = re.compile(optional_space(util.show_name) + r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
+time = re.compile(optional_space(util.event_name) + r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
 
 
 # -- Nominees -- #

@@ -23,7 +23,7 @@ group.add_argument('-t', '--twitter_json', dest='collection', metavar='TWITTER_J
 parser.add_argument('-f', '--force_reload', action='store_true',
                     help='Force reloading tweets JSON into mongoDB')
 
-group.add_argument('-e', '--event_name', default=util.show_name, dest=util.show_name,
+group.add_argument('-e', '--event_name', default=util.event_name, dest=util.event_name,
                    help='Specify name of the award show to process')
 
 args = parser.parse_args()

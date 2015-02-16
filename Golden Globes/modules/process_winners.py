@@ -20,8 +20,11 @@ def run(db, target, event):
     vprint('Processing winners...')
     processed_winners = consolidate_winners(raw_winners)
     vprint('Sorting winners...')
-    target.winner_bins = sorted(processed_winners.items(), key=sort_winners, reverse=True)
-
+    sorted_winners = sorted(processed_winners.items(), key=sort_winners, reverse=True)
+    vprint('Getting top winners...')
+    top_winners = get_top_winners(sorted_winners)
+    consolidated_winners = super_consolidate(top_winners)
+    target.winner_bins = sorted(consolidated_winners.items(), key=sort_winners, reverse=True)
 
 def sort_winners(key):
     return len(key[1])
@@ -31,6 +34,8 @@ def consolidate_winners(winner_bins):
     winners = {}
     for winner_name, awards in winner_bins.items():
         if winner_name:
+            if winner_name in util.common_words:
+                continue
             if winner_name[0] == '@':
                 winner_name = handle_lookup(winner_name)
             elif winner_name[0] == '#':
@@ -41,6 +46,49 @@ def consolidate_winners(winner_bins):
             else:
                 winners[winner_name] = awards
     return winners
+
+
+def get_top_winners(winner_bins):
+    total = 0
+    so_far = 0
+    result = []
+    for winner, value in winner_bins:
+        total += len(value)
+    thresh = total * util.winner_threshold
+    for winner, value in winner_bins:
+        if so_far > thresh:
+            break
+        result.append((winner, value))
+        so_far += len(value)
+    return result
+
+
+def super_consolidate(winner_bins):
+    result = {}
+    # ref_dict = {name: None for name, value in winner_bins}
+    ref_dict = {}
+    for i in range(len(winner_bins)):
+        for j in range(len(winner_bins)):
+            if i == j:
+                continue
+            if winner_bins[i][0] in winner_bins[j][0]:
+                print winner_bins[i][0], "in", winner_bins[j][0]
+                if i > j:
+                    # ref_dict[winner_bins[j][0]] = winner_bins[j][0]
+                    ref_dict[winner_bins[i][0]] = winner_bins[j][0]
+                else:
+                    ref_dict[winner_bins[j][0]] = winner_bins[i][0]
+                    # ref_dict[winner_bins[i][0]] = winner_bins[i][0]
+    for name, value in winner_bins:
+        if name in ref_dict:
+            simplified_name = ref_dict[name]
+        else:
+            simplified_name = name
+        if simplified_name in result:
+            result[simplified_name].extend(value)
+        else:
+            result[simplified_name] = value
+    return result
 
 
 def handle_lookup(winner_name):
