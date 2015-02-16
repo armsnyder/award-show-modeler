@@ -28,7 +28,8 @@ time = re.compile(optional_space(util.show_name) + r'.*at (\d+):?\d* *([ap]m) ?(
 # -- Nominees -- #
 
 nominees = re.compile(r'\bnomi?')
-
+eehhhh = re.compile(r'(.*) should(?:(?:\'ve)|(?: have))(?: been (.*)\W?)?', re.I)
+eh = re.compile(r'(if (.*) wins)', re.I)
 
 #  -- Winners -- #
 
@@ -44,4 +45,4 @@ winner_models = [
 
 # -- Obscure -- #
 
-israel = re.compile(r'(?=.*\bEthan Hawke\b)(?=.*\bMark Ruffalo\b).*', re.I)
+israel = re.compile(r'.*Ethan Hawke.*', re.I)
