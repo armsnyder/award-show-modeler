@@ -46,6 +46,12 @@ winner_models.append(re.compile(r'(.*) w[io]n.*' + best_str, re.I))
 
 twitter_handel = re.compile(r'(@\w+)')
 
+
+# -- Result -- #
+
+output = re.compile(r'output_(\d+)\.json')
+
+
 # -- Obscure -- #
 
 israel = re.compile(r'.*Ethan Hawke.*', re.I)

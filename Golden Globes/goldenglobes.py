@@ -11,6 +11,7 @@
 # on the project simultaneously with as little conflict as possible.
 
 import threading
+import os
 
 import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
@@ -20,6 +21,8 @@ import modules.process_nominees as process_nominees
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint
+import autograder.autograder as autograder
+import modules.util as util
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -37,6 +40,8 @@ def main():
     # raw_input('Shall we begin execution? ')
     process_tweets(db, result)
     result.print_results()
+    output = result.print_output_file()
+    autograder.main(output)
 
 
 def process_tweets(db, result):
@@ -77,4 +82,5 @@ def process_tweets(db, result):
 
 
 if __name__ == '__main__':
+    util.script_path = os.path.dirname(os.path.realpath(__file__))
     main()

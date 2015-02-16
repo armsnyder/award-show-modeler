@@ -4,6 +4,7 @@ from nltk.metrics import edit_distance,masi_distance
 import difflib
 from collections import Counter
 from pprint import pprint
+import os
 
 decision_to_methods = {'1': 'hardcoded', '2': 'scraped', '3': 'detected'}
 methods_to_decision = {'hardcoded': 1, 'scraped': 2, 'detected': 3}
@@ -268,7 +269,9 @@ def main(filename):
         results = json.load(f)
     results['data'] = lowercase(results['data'])
 
-    with open('gg%sanswers.json'%str(results['metadata']['year']),'r') as f:
+    answer_key = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                              'gg%sanswers.json'%str(results['metadata']['year']))
+    with open(answer_key,'r') as f:
         answers = lowercase(json.load(f))
 
     scores = {'unstructured': {},'structured': {}}

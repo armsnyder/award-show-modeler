@@ -4,14 +4,19 @@ import sys
 import nltk
 import operator
 import twitter
+import os
+import re
 
 # -- FIELDS -- #
 
 verbose = True  # if True, will FORCE print out of additional debug messages using vprint
 search_twitter_handles = False
-default_collection = 'samples/goldenglobes2015_2_05_386000.json'  # default tweet JSON
+default_collection = '$r/samples/goldenglobes2015_2_06_386000.json'  # default JSON input or collection name
 default_database = 'gg'  # default MongoDB database (Miriam's is gg)
-host_threshold = 0.9
+default_output = '$r/output'  # default output JSON destination
+output_path = None
+script_path = None
+host_threshold = 0.8
 winner_threshold = 0.545
 award_time_percentile = 0.1
 event_name = 'Golden Globes'
@@ -53,6 +58,16 @@ def vprint(text):
     if verbose:
         print text
     return
+
+
+def get_path(path):
+    """takes a path and joins it with the path of the calling script"""
+    match = re.search(r'\$r/(.*)', path)
+    if match:
+        result = os.path.join(script_path, match.group(1))
+    else:
+        result = path
+    return result
 
 
 # def select_best(list):
