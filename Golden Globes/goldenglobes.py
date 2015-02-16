@@ -16,7 +16,7 @@ import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
 import modules.process_winners as process_winners
-# import modules.process_nominees as process_nominees
+import modules.process_nominees as process_nominees
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint

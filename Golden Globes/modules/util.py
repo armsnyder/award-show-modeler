@@ -1,21 +1,32 @@
 # Contains non-specific utility functions and strings
 
 import sys
+import nltk
+import operator
 import twitter
 
 # -- FIELDS -- #
 
 verbose = True  # if True, will FORCE print out of additional debug messages using vprint
+search_twitter_handles = False
 default_collection = 'samples/goldenglobes2015_2_05_386000.json'  # default tweet JSON
 default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 host_threshold = 0.9
-show_name = 'Golden Globes'
+winner_threshold = 0.545
+award_time_percentile = 0.1
+event_name = 'Golden Globes'
 twitter_key = 'DYcq5c6vadVEe4l8Xnd5Dhu29'
 twitter_secret = 'PB0mYw89QYCu9YC63s3bbAxfJr2h07DmJ9zwNlKX4sT1yVbBDR'
 twitter_access_token = '80998836-wYMg9lHff0WgBys71LV1SVFwyaaL0XVU17M7Gfx2x'
 twitter_access_secret = 'd8MV8XAPJoNs40Z4164uUgMjUwmaqOYRygKm82U9zgD0o'
 twitter_api = twitter.Twitter(
     auth=twitter.oauth.OAuth(twitter_access_token, twitter_access_secret, twitter_key, twitter_secret))
+common_words = list(nltk.corpus.stopwords.words('english'))
+event_name_list = nltk.word_tokenize(event_name.lower())
+for token in event_name_list:
+    if token[-1] == 's':
+        event_name_list.append(token[:-1])
+common_words.extend(event_name_list)
 
 
 # -- METHODS -- #
@@ -42,3 +53,25 @@ def vprint(text):
     if verbose:
         print text
     return
+
+
+# def select_best(list):
+#     result = []
+#     disagreement = True
+#     i = 0
+#     while disagreement:
+#         frequencies = {}
+#         for item in list:
+#             ith_word = item[i]
+#             if not ith_word:
+#                 list.remove(item)
+#                 continue
+#             if ith_word in frequencies:
+#                 frequencies[ith_word] += 1
+#             else:
+#                 frequencies[ith_word] = 1
+#         if len(frequencies) == 1:
+#             disagreement = False
+#         r = (sorted(frequencies.items(), key=operator.itemgetter(1), reverse=True))
+#         result.append(r[0][0])
+#         i += 1
