@@ -4,9 +4,9 @@
     # TODO: (possibly using hamming distance)
 
 
-import nltk
 import datetime
 from dateutil import tz
+import twitter
 
 import regex
 from util import vprint
@@ -15,8 +15,55 @@ import util
 
 def run(db, target, event):
     event.wait()  # Wait for start_time to be set
-    vprint('Received start time. Processing winners...')
+    vprint('Received start time. Finding winners...')
+    read_winners(db, target)
+    vprint('Processing winners...')
+    target.winner_bins = consolidate_winners(read_winners(db, target))
+
+
+def consolidate_winners(winner_bins):
+    winners = {}
+    for winner_name, awards in winner_bins.items():
+        if winner_name:
+            if winner_name[0] == '@':
+                winner_name = handle_lookup(winner_name)
+            elif winner_name[0] == '#':
+                winner_name = split_hashtag(winner_name)
+            if winner_name in winners.keys():
+                winners[winner_name].extend(awards)
+            else:
+                winners[winner_name] = awards
+    return winners
+
+
+def handle_lookup(winner_name):
+    result = winner_name
+    match = regex.twitter_handel.search(winner_name)
+    if match:
+        try:
+            result = util.twitter_api.users.show(screen_name=match.group(1))['name']
+        except twitter.api.TwitterHTTPError:
+            pass
+    return result
+
+
+def split_hashtag(hashtag):
+    result = ''
+    for letter in hashtag:
+        if letter == '#':
+            continue
+        if letter.islower():
+            result += letter
+        elif result:
+            result += ' ' + letter
+        else:
+            result += letter
+    return result
+
+
+def read_winners(db, target):
     cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False}})
+    winner_bins = {}
     for tweet in cursor:
         tweet_time = datetime.datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')\
             .replace(tzinfo=tz.gettz('UTC'))
@@ -34,10 +81,11 @@ def run(db, target, event):
             continue
         winner = parsed_tweet.group(1)
         award = parsed_tweet.group(2)
-        if winner in target.winner_bins.keys():
-            target.winner_bins[winner].append((award, tweet_time))
+        if winner in winner_bins.keys():
+            winner_bins[winner].append((award, tweet_time))
         else:
-            target.winner_bins[winner] = [(award, tweet_time)]
+            winner_bins[winner] = [(award, tweet_time)]
+    return winner_bins
 
 
 def weed_out(tweet, target, tweet_time):
