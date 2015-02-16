@@ -44,11 +44,16 @@ class Result:
         return host_string
 
     def display_winners(self):
-        """Not nealy done....."""
+        """Not neally done....."""
         f = ''
-        for winner, value in self.winner_bins.items():
+        total = 0
+        for winner, value in self.winner_bins:
+            total += len(value)
+        acc = 0
+        for winner, value in self.winner_bins:
+            acc += len(value)
             if winner:
-                f += winner.encode('utf8')+':\r\n'
-            for award, time in value:
-                f += '\t'+award.encode('utf8')+'\r\n'
+                f += winner.encode('utf8')+': '+str(acc*100/total)+'\r\n'
+            # for award, time in value:
+            #     f += '\t'+award.encode('utf8')+'\r\n'
         return f

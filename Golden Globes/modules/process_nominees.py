@@ -4,8 +4,8 @@
 # TODO: Match to categories (Zinger)
 
 import operator
-import imdb
-ia = imdb.IMDb()
+# import imdb
+# ia = imdb.IMDb()
 import nltk
 
 import regex

@@ -16,9 +16,15 @@ import util
 def run(db, target, event):
     event.wait()  # Wait for start_time to be set
     vprint('Received start time. Finding winners...')
-    read_winners(db, target)
+    raw_winners = read_winners(db, target)
     vprint('Processing winners...')
-    target.winner_bins = consolidate_winners(read_winners(db, target))
+    processed_winners = consolidate_winners(raw_winners)
+    vprint('Sorting winners...')
+    target.winner_bins = sorted(processed_winners.items(), key=sort_winners, reverse=True)
+
+
+def sort_winners(key):
+    return len(key[1])
 
 
 def consolidate_winners(winner_bins):
@@ -29,6 +35,7 @@ def consolidate_winners(winner_bins):
                 winner_name = handle_lookup(winner_name)
             elif winner_name[0] == '#':
                 winner_name = split_hashtag(winner_name)
+            winner_name = winner_name.lower()
             if winner_name in winners.keys():
                 winners[winner_name].extend(awards)
             else:
