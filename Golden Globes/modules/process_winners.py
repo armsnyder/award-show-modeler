@@ -8,6 +8,7 @@ import datetime
 from dateutil import tz
 import twitter
 import nltk
+import math
 
 import regex
 from util import vprint
@@ -25,7 +26,8 @@ def run(db, target, event):
     vprint('Getting top winners...')
     top_winners = get_top_winners(sorted_winners)
     consolidated_winners = super_consolidate(top_winners)
-    target.winner_bins = sorted(consolidated_winners.items(), key=sort_winners, reverse=True)
+    sorted_super = sorted(consolidated_winners.items(), key=sort_winners, reverse=True)
+    target.winners = match_to_awards(sorted_super)
 
 
 def sort_winners(key):
@@ -51,7 +53,6 @@ def consolidate_winners(winner_bins):
                     winner_passes = True
                     break
             if not winner_passes:
-                print 'Uh Oh. Found', winner_name + ', which is NO GOOD'
                 continue
             if winner_name in winners.keys():
                 winners[winner_name].extend(awards)
@@ -84,7 +85,6 @@ def super_consolidate(winner_bins):
             if i == j:
                 continue
             if winner_bins[i][0] in winner_bins[j][0]:
-                print winner_bins[i][0], "in", winner_bins[j][0]
                 if winner_bins[i][0] in ref_dict:
                     ref_dict[winner_bins[j][0]] = ref_dict[winner_bins[i][0]]
                 elif winner_bins[j][0] in ref_dict:
@@ -167,3 +167,26 @@ def weed_out(tweet, target, tweet_time):
     if tweet_time < target.start_time:
         return True
     return False
+
+
+def match_to_awards(winners):
+    result = []
+    for winner, value in winners:
+        award_list = []
+        time_list = []
+        for award, time in value:
+            award_list.append(award)
+            time_list.append(time)
+        award_result = max(set(award_list), key=award_list.count)
+        time_list = sorted(time_list, key=time_to_seconds)
+        time_result = time_list[int(math.floor(len(time_list)*util.award_time_percentile))]
+        result.append((winner, award_result, time_result))
+    return sorted(result, key=sort_by_time)
+
+
+def time_to_seconds(time):
+    return (time.replace(tzinfo=None)-datetime.datetime.utcfromtimestamp(0)).total_seconds()
+
+
+def sort_by_time(winner):
+    return time_to_seconds(winner[2])

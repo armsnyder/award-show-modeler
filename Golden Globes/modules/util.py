@@ -13,6 +13,7 @@ default_collection = 'samples/goldenglobes2015_2_05_386000.json'  # default twee
 default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 host_threshold = 0.9
 winner_threshold = 0.545
+award_time_percentile = 0.1
 event_name = 'Golden Globes'
 twitter_key = 'DYcq5c6vadVEe4l8Xnd5Dhu29'
 twitter_secret = 'PB0mYw89QYCu9YC63s3bbAxfJr2h07DmJ9zwNlKX4sT1yVbBDR'

@@ -3,15 +3,14 @@
 # Results that are already filled in are optional. We can make processes to extract them later if we're feeling
 # ambitious.
 
+import datetime
 
 class Result:
     def __init__(self):
         self.show_name = 'Golden Globes'
         self.start_time = None
         self.hosts = []
-        self.winner_bins = {}
-        self.winning_films = {}
-        self.winning_people = {}
+        self.winners = []
         self.presenters = {}
         self.nominees = {}
 
@@ -46,14 +45,6 @@ class Result:
     def display_winners(self):
         """Not neally done....."""
         f = ''
-        total = 0
-        for winner, value in self.winner_bins:
-            total += len(value)
-        acc = 0
-        for winner, value in self.winner_bins:
-            acc += len(value)
-            if winner:
-                f += winner.encode('utf8')+': '+str(acc*100/total)+'\r\n'
-            # for award, time in value:
-            #     f += '\t'+award.encode('utf8')+'\r\n'
+        for winner, award, time in self.winners:
+            f += winner + ': ' + award + ' at ' + time.strftime("%H:%M:%S") + '\n'
         return f
