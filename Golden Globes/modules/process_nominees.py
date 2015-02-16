@@ -10,7 +10,6 @@ import nltk
 
 import regex
 import util
-import sys
 
 
 def run(db, target):
