@@ -27,7 +27,8 @@ class Database:
         return
 
     def __del__(self):
-        self.conn.disconnect()
+        if self.conn:
+            self.conn.disconnect()
 
     def connect(self):
         """establishes connection with mongoDB"""
