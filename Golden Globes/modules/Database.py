@@ -2,8 +2,6 @@
 # Don't worry too much about understanding this one. Just look at how the Database object is interfaced with in the
 # already-written modules, often referred to as 'db'
 
-# TODO: Add methods for reading tweets from database
-
 import pymongo
 import os
 import re
@@ -27,6 +25,9 @@ class Database:
         self.access(self.collection_name)
         self.load_collection(force_reload)
         return
+
+    def __del__(self):
+        self.conn.disconnect()
 
     def connect(self):
         """establishes connection with mongoDB"""
