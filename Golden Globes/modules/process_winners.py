@@ -7,6 +7,7 @@
 import datetime
 from dateutil import tz
 import twitter
+import nltk
 
 import regex
 from util import vprint
@@ -26,6 +27,7 @@ def run(db, target, event):
     consolidated_winners = super_consolidate(top_winners)
     target.winner_bins = sorted(consolidated_winners.items(), key=sort_winners, reverse=True)
 
+
 def sort_winners(key):
     return len(key[1])
 
@@ -34,13 +36,23 @@ def consolidate_winners(winner_bins):
     winners = {}
     for winner_name, awards in winner_bins.items():
         if winner_name:
-            if winner_name in util.common_words:
-                continue
             if winner_name[0] == '@':
-                winner_name = handle_lookup(winner_name)
+                if util.search_twitter_handles:
+                    winner_name = handle_lookup(winner_name)
+                else:
+                    continue
             elif winner_name[0] == '#':
                 winner_name = split_hashtag(winner_name)
             winner_name = winner_name.lower()
+            winner_tokens = nltk.word_tokenize(winner_name)
+            winner_passes = False
+            for token in winner_tokens:
+                if token not in util.common_words:
+                    winner_passes = True
+                    break
+            if not winner_passes:
+                print 'Uh Oh. Found', winner_name + ', which is NO GOOD'
+                continue
             if winner_name in winners.keys():
                 winners[winner_name].extend(awards)
             else:
@@ -73,12 +85,16 @@ def super_consolidate(winner_bins):
                 continue
             if winner_bins[i][0] in winner_bins[j][0]:
                 print winner_bins[i][0], "in", winner_bins[j][0]
-                if i > j:
-                    # ref_dict[winner_bins[j][0]] = winner_bins[j][0]
+                if winner_bins[i][0] in ref_dict:
+                    ref_dict[winner_bins[j][0]] = ref_dict[winner_bins[i][0]]
+                elif winner_bins[j][0] in ref_dict:
+                    ref_dict[winner_bins[i][0]] = ref_dict[winner_bins[j][0]]
+                elif i > j:
+                    ref_dict[winner_bins[j][0]] = winner_bins[j][0]
                     ref_dict[winner_bins[i][0]] = winner_bins[j][0]
                 else:
                     ref_dict[winner_bins[j][0]] = winner_bins[i][0]
-                    # ref_dict[winner_bins[i][0]] = winner_bins[i][0]
+                    ref_dict[winner_bins[i][0]] = winner_bins[i][0]
     for name, value in winner_bins:
         if name in ref_dict:
             simplified_name = ref_dict[name]

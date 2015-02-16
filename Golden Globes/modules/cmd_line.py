@@ -7,7 +7,7 @@ import util
 parser = argparse.ArgumentParser(description='Discover information about an awards ceremony by processing tweets')
 group = parser.add_mutually_exclusive_group()
 
-parser.add_argument('-v', '--verbose', action='store_true', dest=util.verbose,
+parser.add_argument('-v', '--verbose', action='store_true',
                     help='Show additional system messages')
 
 parser.add_argument('-d', '--database', default=util.default_database,
@@ -26,7 +26,12 @@ parser.add_argument('-f', '--force_reload', action='store_true',
 group.add_argument('-e', '--event_name', default=util.event_name, dest=util.event_name,
                    help='Specify name of the award show to process')
 
-parser.add_argument('-a', '--twitter_handles', action='store_true', dest=util.search_twitter_handles,
+parser.add_argument('-a', '--twitter_handles', action='store_true',
                     help='Match twitter handles to names (requires Internet connection, takes longer)')
 
 args = parser.parse_args()
+
+if args.verbose:
+    util.verbose = True
+if args.twitter_handles:
+    util.search_twitter_handles = True
