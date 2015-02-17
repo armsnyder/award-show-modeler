@@ -1,6 +1,5 @@
 import nltk
 import operator
-import sys
 import datetime
 from dateutil import tz
 
@@ -10,18 +9,22 @@ import util
 
 def run(db, target, event):
     event.wait()
-    queue = list(target.winners)
+    util.vprint("Winners received. finding presenters and nominees...")
+#    queue = list(target.winners)
 #    current_winner = queue.pop(0)
     for winner, value, time in target.winners:
-        print winner + '\n'
         presenter_names = {}
         nominee_names = {}
         for i in [-1, 1]:
             if i == -1:
                 current_dict = presenter_names
+                start = time - 180
+                end = time
             else:
                 current_dict = nominee_names
-            cursor = db.collection.find({'created_at': regex.time_model(time.hour, time.minute, i)})
+                start = time
+                end = time + 360
+            cursor = db.collection.find({'timestamp_ms': {'$gt': str(start), '$lt': str(end)}})
             for tweet in cursor:
                 if i == 1 and not regex.eehhhh.match(tweet['text']):
                     continue
@@ -44,11 +47,21 @@ def run(db, target, event):
             p.remove(winner)
         if winner in n:
             n.remove(winner)
-        if len(p) > 2:
-            target.presenters[winner] = (p[0], p[1])
-        if len(n) > 5:
-            target.nominees[winner] = (n[0], n[1], n[2], n[3])
-    print target.nominees
+        for j in range(0, 1):
+            if len(p) > 1:
+                target.presenters.append((p[j][0]))
+        # if len(p) > 2:
+        #     target.presenters.append((p[0][0], p[1][0]))
+        # else:
+        #     target.presenters.append(())
+        for k in range(0, 3):
+            if len(n) > 3:
+                target.presenters.append((n[k][0]))
+        # if len(n) > 5:
+        #     target.nominees.append((n[0][0], n[1][0], n[2][0], n[3][0]))
+        # else:
+        #     target.nominees.append(())
+    util.vprint("Finished Presenters and Noms")
     return
 
 

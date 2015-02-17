@@ -25,7 +25,7 @@ def run(db, target):
         tokens = nltk.word_tokenize(text)
         bg = nltk.bigrams(tokens)
         for name in bg:
-            if ignore_name(name):
+            if name[0] in util.bad_names or name[1] in util.bad_names:
                 continue
             if name[0][0].isupper() and name[1][0].isupper():
                 if name in worst:
@@ -39,14 +39,12 @@ def run(db, target):
             most_popular = popularity
         percent_popularity = popularity / most_popular
         if percent_popularity > 0.5:
-            target.worst_dressed.append(name)
+            typo = False
+            for n in target.worst_dressed:
+                if nltk.metrics.edit_distance(n, name) < 4:
+                    typo = True
+            if not typo:
+                target.worst_dressed.append(name)
         else:
             break
     return
-
-
-def ignore_name(name):
-    if name[0] == ('Golden' or 'Red' or 'Vote' or 'VOTE'):
-        return True
-    return False
-

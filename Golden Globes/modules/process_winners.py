@@ -138,8 +138,7 @@ def read_winners(db, target):
     cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False}})
     winner_bins = {}
     for tweet in cursor:
-        tweet_time = datetime.datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')\
-            .replace(tzinfo=tz.gettz('UTC'))
+        tweet_time = int(tweet['timestamp_ms']) / 1e3
         if weed_out(tweet, target, tweet_time):
             continue
         parsed_tweet = None
@@ -179,8 +178,8 @@ def match_to_awards(winners):
         for award, time in value:
             award_list.append(award)
             time_list.append(time)
-        award_result = max(set(award_list), key=award_list.count) # select_best(award_list) 
-        time_list = sorted(time_list, key=time_to_seconds)
+        award_result = max(set(award_list), key=award_list.count) # select_best(award_list)
+        time_list = sorted(time_list)
         time_result = time_list[int(math.floor(len(time_list)*util.award_time_percentile))]
         result.append((winner, award_result, time_result))
     return sorted(result, key=sort_by_time)
@@ -189,13 +188,21 @@ def match_to_awards(winners):
 def select_best(award_list):
     buffy = {}
     for award in award_list:
-        if award in buffer:
-            buffy[award] += 1
-        else:
-            buffy[award] = 1
-    sorted_list = sorted(buffy, key=itemgetter(1), reverse=True)
-    top_list = sorted_list[:math.floor(len(sorted_list)*util.award_name_threshold)]
-    return max(set(top_list), key=award_list.count)
+        toks = nltk.word_tokenize(award)
+        for tok in toks:
+            if tok in buffy:
+                buffy[tok] += 1
+            else:
+                buffy[tok] = 1
+    # buffy = {}
+    # for award in award_list:
+    #     if award in buffer:
+    #         buffy[award] += 1
+    #     else:
+    #         buffy[award] = 1
+    # sorted_list = sorted(buffy, key=itemgetter(1), reverse=True)
+    # top_list = sorted_list[:math.floor(len(sorted_list)*util.award_name_threshold)]
+    # return max(set(top_list), key=award_list.count)
 
 
 def time_to_seconds(time):
@@ -203,4 +210,4 @@ def time_to_seconds(time):
 
 
 def sort_by_time(winner):
-    return time_to_seconds(winner[2])
+    return winner[2]
