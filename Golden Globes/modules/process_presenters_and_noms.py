@@ -10,6 +10,7 @@ import util
 
 def run(db, target, event):
     event.wait()
+    util.vprint("Winners received. finding presenters and nominees...")
     queue = list(target.winners)
 #    current_winner = queue.pop(0)
     for winner, value, time in target.winners:
@@ -20,7 +21,7 @@ def run(db, target, event):
                 current_dict = presenter_names
             else:
                 current_dict = nominee_names
-            cursor = db.collection.find({'created_at': regex.time_model(time.hour, time.minute, i)})
+            cursor = db.collection.find({'created_at': regex.delta_time(time, i*180, 90+90*i)})
             for tweet in cursor:
                 if i == 1 and not regex.eehhhh.match(tweet['text']):
                     continue
@@ -44,9 +45,14 @@ def run(db, target, event):
         if winner in n:
             n.remove(winner)
         if len(p) > 2:
-            target.presenters[winner] = (p[0], p[1])
+            target.presenters.append((p[0], p[1]))
+        else:
+            target.presenters.append(())
         if len(n) > 5:
-            target.nominees[winner] = (n[0], n[1], n[2], n[3])
+            target.nominees.append((n[0], n[1], n[2], n[3]))
+        else:
+            target.nominees.append(())
+    util.vprint("Finished Presenters and Noms")
     return
 
 

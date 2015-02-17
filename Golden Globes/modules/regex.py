@@ -29,7 +29,7 @@ time = re.compile(optional_space(util.event_name) + r'.*at (\d+):?\d* *([ap]m) ?
 # -- Nominees -- #
 
 nominees = re.compile(r'\bnomi?')
-eehhhh = re.compile(r'(.*) should(?:(?:\'ve)|(?: have))(?: (?:been|got(?:ten)?|won) (.*)\W?)?', re.I)
+eehhhh = re.compile(r'(.*) should(?:(?:\'ve)|(?: have))(?: (?:been|won|got(?:ten)?) (.*)\W?)?', re.I)
 eh = re.compile(r'(if (.*) wins)', re.I)
 
 
