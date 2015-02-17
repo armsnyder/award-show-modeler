@@ -56,7 +56,7 @@ def run(db, target, event):
         #     target.presenters.append(())
         for k in range(0, 3):
             if len(n) > 3:
-                target.presenters.append((n[k][0]))
+                target.nominees.append((n[k][0]))
         # if len(n) > 5:
         #     target.nominees.append((n[0][0], n[1][0], n[2][0], n[3][0]))
         # else:
