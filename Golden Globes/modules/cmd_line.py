@@ -32,6 +32,9 @@ parser.add_argument('-a', '--twitter_handles', action='store_true',
 group.add_argument('-o', '--output',  default=util.default_output,
                    help='File path destination for output JSON file for the auto-grader')
 
+parser.add_argument('-g', '--run_autograder', action='store_true',
+                    help='Automatically launch the autograder when finished')
+
 args = parser.parse_args()
 
 if args.verbose:

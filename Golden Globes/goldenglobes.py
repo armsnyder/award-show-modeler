@@ -41,7 +41,8 @@ def main():
     process_tweets(db, result)
     result.print_results()
     output = result.print_output_file()
-    autograder.main(output)
+    if cmd_line.args.run_autograder:
+        autograder.main(output)
 
 
 def process_tweets(db, result):
