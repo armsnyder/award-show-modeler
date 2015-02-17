@@ -11,7 +11,7 @@ import re
 
 verbose = True  # if True, will FORCE print out of additional debug messages using vprint
 search_twitter_handles = False
-default_collection = '/Volumes/Navi/Users/flame2/Documents/Northwestern/Y3Q2/EECS 337/tweets.json'
+default_collection = '/Volumes/Navi/Users/flame2/Documents/Northwestern/Y3Q2/EECS 337/gg15mini.json'
 # default JSON input or collection name
 default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 default_output = '$r/output'  # default output JSON destination
