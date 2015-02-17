@@ -17,7 +17,20 @@ regular expressions in regex.py.
 
 We anticipate our system being adaptable for future years because we did not hard-code any of the tasks.
 
-Libraries used:
-re
-nltk
+
+##Libraries:
+Pymongo
+	Python-based database software for compiling the corpus of tweets used.
+NLTK
+	Python’s Natural Language toolkit.
+RE
+	Regular Expression library.
 twitter
+    Useful Python library for consolidating twitter handles to actual people names (use cmd_line options)
+TKInter
+	Interface building library for Python. Allows for GUI interface building.
+
+
+Reference Code:
+Tutorials Point TkInter and general Python tutorials
+	http://www.tutorialspoint.com/python/

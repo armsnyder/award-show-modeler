@@ -4,11 +4,14 @@
 # ambitious.
 
 import datetime
+from GUI import *
 import json
 import os
 import util
 import itertools
 
+import image_search
+import GUI
 import regex
 
 
@@ -54,6 +57,9 @@ class Result:
                 host_string += '!'
             else:
                 host_string == ', '
+
+        GUI.html_hosts(host_string)
+        GUI.html_image_add(host_string)
         return host_string
 
     def display_winners(self):
@@ -101,12 +107,11 @@ class Result:
                     },
                     'nominees': {
                         'method': 'detected',
-                        'method_description': 'A regular expression is procedurally generated to match a range of \n'
-                                              'tweet timestamps in the database. For every award, an estimated \n'
-                                              'time of conferral is used as an anchor time to collect a cursor \n'
-                                              'of tweets which are matched first to the regex \'nominees\' and \n'
-                                              'then to the regex for names to extract probable nominees. The most \n'
-                                              'popular names that are not hosts or winners are selected.'
+                        'method_description': 'For every award, an estimated time of conferral is used as an \n'
+                                              'anchor time to collect a cursor of tweets which are matched first \n'
+                                              'to the regex \'nominees\' and \n then to the regex for names to \n'
+                                              'extract probable nominees. The most popular names that are not \n'
+                                              'hosts or winners are selected.'
                     },
                     'awards': {
                         'method': 'detected',
@@ -162,6 +167,20 @@ class Result:
         }
 
         # Structured
+        for winner, award, time in self.winners:
+            self.autograder_result['data']['structured'][award] = {
+                'nominees': [],
+                'winner': winner,
+                'presenters': []
+            }
+
+        for winner, award, time in self.winners:
+            GUI.html_text_add(award)
+            GUI.html_text_winner(winner)
+            GUI.html_image_add(image_search.find_image(winner))
+            GUI.html_text_time(datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S"))
+
+        html_done()
         for i in range(len(self.winners)):
             self.autograder_result['data']['structured'][self.winners[i][1]] = {
                 'nominees': list(self.nominees[i]),
@@ -171,9 +190,13 @@ class Result:
 
     def show_best_dressed(self):
         best_string = 'Best Dressed: '
+        GUI.html_text_heading(best_string)
         number_of_best = len(self.best_dressed)
-        for name in range(number_of_best):
-            best_string += self.join_name(self.best_dressed[name])
+        for name in self.best_dressed:
+            print(name)
+            # GUI.html_text_add(name)
+            # GUI.html_image_add(name)
+            best_string += self.join_name(name)
             if name == number_of_best-2:
                 best_string += ' and '
             elif name == number_of_best-1:
@@ -184,9 +207,12 @@ class Result:
 
     def show_worst_dressed(self):
         worst_string = 'Worst Dressed: '
+        GUI.html_text_heading(worst_string)
         number_of_worst = len(self.worst_dressed)
         for name in range(number_of_worst):
-            worst_string += self.join_name(self.worst_dressed[name])
+            # GUI.html_text_add(name)
+            # GUI.html_image_add(name)
+            worst_string += self.join_name(name)
             if name == number_of_worst-2:
                 worst_string += ' and '
             elif name == number_of_worst-1:

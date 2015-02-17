@@ -25,6 +25,7 @@ from modules.Database import Database
 from modules.util import vprint
 import autograder.autograder as autograder
 import modules.util as util
+import modules.GUI
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -46,6 +47,7 @@ def main():
     output = result.print_output_file()
     if cmd_line.args.run_autograder:
         autograder.main(output)
+    modules.GUI.html_done()
 
 
 def process_tweets(db, result):
@@ -88,6 +90,7 @@ def process_tweets(db, result):
             continue
         thread.join()
         vprint('%s finished' % thread.name)
+
     return
 
 

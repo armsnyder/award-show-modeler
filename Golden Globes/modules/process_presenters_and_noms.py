@@ -47,16 +47,34 @@ def run(db, target, event):
             pl.remove(winner)
         if winner in nl:
             nl.remove(winner)
-        for j in range(0, 1):
-            if len(pl) > 1:
-                target.presenters.append((pl[j][0]))
+
+        if len(pl):
+            pl_trunc = []
+            for i in range(len(pl)):
+                if i > 1:
+                    break
+            pl_trunc.append(pl[i][0])
+            target.presenters.append(tuple(pl_trunc))
+        else:
+            target.presenters.append(())
+
+        if len(nl):
+            nl_trunc = []
+            for j in range(len(nl)):
+                if i > 3:
+                    break
+                nl_trunc.append(pl[j][0])
+            target.nominees.append(tuple(nl_trunc))
+        else:
+            target.nominees.append(())
+
         # if len(p) > 2:
         #     target.presenters.append((p[0][0], p[1][0]))
         # else:
         #     target.presenters.append(())
-        for k in range(0, 3):
-            if len(nl) > 3:
-                target.nominees.append((nl[k][0]))
+        # for k in range(0, 3):
+        #     if len(nl) > 3:
+        #         target.nominees.append((nl[k][0]))
         # if len(n) > 5:
         #     target.nominees.append((n[0][0], n[1][0], n[2][0], n[3][0]))
         # else:

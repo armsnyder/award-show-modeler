@@ -26,6 +26,8 @@ class ProgressBar:
         if self.total_x == self.progress_x:
             self.end_progress()
 
+
+
     def end_progress(self):
         if self.running:
             print ''
