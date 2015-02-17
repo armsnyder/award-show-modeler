@@ -13,20 +13,24 @@ def run(db, target, event):
     queue = list(target.winners)
 #    current_winner = queue.pop(0)
     for winner, value, time in target.winners:
+        print winner + '\n'
         presenter_names = {}
         nominee_names = {}
-        for i in [-1,1]:
+        for i in [-1, 1]:
             if i == -1:
                 current_dict = presenter_names
             else:
                 current_dict = nominee_names
             cursor = db.collection.find({'created_at': regex.time_model(time.hour, time.minute, i)})
             for tweet in cursor:
+                if i == 1 and not regex.eehhhh.match(tweet['text']):
+                    continue
                 n = regex.name.match(tweet['text'])
                 if n:
                     n = n.group()
+                    n = n.lower()
                     toks = nltk.word_tokenize(n)
-                    if toks[0].lower() in util.common_words or toks[1].lower() in util.common_words:
+                    if toks[0] in util.common_words or toks[1] in util.common_words:
                         continue
                     else:
                         if n in current_dict:
@@ -35,14 +39,17 @@ def run(db, target, event):
                         else:
                             current_dict[n] = 1
         p = sorted(presenter_names.items(), key=operator.itemgetter(1), reverse=True)
-        n = sorted(nominee_names.items(), key = operator.itemgetter(1),reverse=True)
-
-        # TODO: As long as didn't win, isn't host, etc
-        target.presenters[winner] = (p[0], p[1])
-        target.nominees[winner] = (n[0], n[1], n[2], n[3])
+        n = sorted(nominee_names.items(), key=operator.itemgetter(1), reverse=True)
+        if winner in p:
+            p.remove(winner)
+        if winner in n:
+            n.remove(winner)
+        if len(p) > 2:
+            target.presenters[winner] = (p[0], p[1])
+        if len(n) > 5:
+            target.nominees[winner] = (n[0], n[1], n[2], n[3])
+    print target.nominees
     return
-
-
 
 
     # for tweet in mega_cursor:
