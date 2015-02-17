@@ -105,7 +105,17 @@ class Result:
                     },
                     'awards': {
                         'method': 'detected',
-                        'method_description': ''
+                        'method_description': 'The awards are detected in conjunction with the winners. First, \n'
+                                              'the tweets are filtered by a regex that checks if the tweet \n'
+                                              'contains a form of the word \'win\' and \'best\'. These tweets \n'
+                                              'are further filtered by removing those using subjunctive tense \n'
+                                              'or occurring before the ceremony\'s start time, which is also \n'
+                                              'detected. The remaining tweets are matched against several \n'
+                                              'language models that attempt to pull out winner and award names. \n'
+                                              'The awards are grouped by winner (as the dictionary key), which \n'
+                                              'goes through a couple consolidation steps. The top winners are \n'
+                                              'extracted, and the most popular award name per winner bin is \n'
+                                              'added to the award list.'
                     },
                     'presenters': {
                         'method': 'detected',
@@ -128,8 +138,8 @@ class Result:
                     'hosts': self.hosts,
                     'winners': [winner for winner, award, time in self.winners],
                     'awards': [award for winner, award, time in self.winners],
-                    'presenters': itertools.chain.from_iterable(self.presenters),
-                    'nominees': itertools.chain.from_iterable(self.nominees)
+                    'presenters': list(itertools.chain.from_iterable(self.presenters)),
+                    'nominees': list(itertools.chain.from_iterable(self.nominees))
                 },
                 'structured': {}
             }
