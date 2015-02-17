@@ -25,7 +25,7 @@ def run(db, target):
         tokens = nltk.word_tokenize(text)
         bg = nltk.bigrams(tokens)
         for name in bg:
-            if ignore_name(name):
+            if name[0] in util.bad_names or name[1] in util.bad_names:
                 continue
             if name[0][0].isupper() and name[1][0].isupper():
                 if name in worst:
@@ -43,10 +43,3 @@ def run(db, target):
         else:
             break
     return
-
-
-def ignore_name(name):
-    if name[0] == ('Golden' or 'Red' or 'Vote' or 'VOTE'):
-        return True
-    return False
-

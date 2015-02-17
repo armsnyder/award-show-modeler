@@ -4,6 +4,7 @@
 # so trying to just find most popular names instead
 # This wouldn't have been great without a GUI anyway.
 # TODO: Figure out the best popularity ratio. Spit out a top 5 list in Result.py?
+# for top k results, run edit distance on each pair to get rid of misspellings.
 
 from __future__ import division
 import operator
@@ -25,7 +26,7 @@ def run(db, target):
         tokens = nltk.word_tokenize(text)
         bg = nltk.bigrams(tokens)
         for name in bg:
-            if ignore_name(name):
+            if name[0] in util.bad_names or name[1] in util.bad_names:
                 continue
             if name[0][0].isupper() and name[1][0].isupper():
                 if name in best:
@@ -43,12 +44,6 @@ def run(db, target):
         else:
             break
     return
-
-
-def ignore_name(name):
-    if name[0] == ('Golden' or 'Red' or 'Vote' or 'VOTE'):
-        return True
-    return False
 
 
 # everything below here is a failed attempt

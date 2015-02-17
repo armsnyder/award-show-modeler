@@ -88,3 +88,4 @@ israel = re.compile(r'.*Ethan Hawke.*', re.I)
 # -- Red Carpet -- #
 best_dressed = re.compile(r'#(\w*best+\w*dress)', re.I)
 worst_dressed = re.compile(r'#(\w*wors+\w*dress)', re.I)
+outfit = re.compile(r'wear|wore', re.I)

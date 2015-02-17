@@ -32,7 +32,7 @@ for token in event_name_list:
     if token[-1] == 's':
         event_name_list.append(token[:-1])
 common_words.extend(event_name_list)
-
+bad_names = ['Golden', 'Red', 'Vote', 'VOTE', 'Kiera', 'Knightly']
 
 # -- METHODS -- #
 
