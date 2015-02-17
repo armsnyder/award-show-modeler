@@ -93,9 +93,9 @@ class Result:
                 'names': {
                     'hosts': {
                         'method': 'detected',
-                        'method_description': 'The tweets are filtered first by the regex \'hosts\' and second \n'
-                                              'by a regex we wrote to extract names. These names are placed into \n'
-                                              'a dictionary, which maintains the popularity of each name. The \n'
+                        'method_description': 'The tweets are filtered first by the regex \'host\' and second by \n'
+                                              'a regex we wrote to extract names. These names are placed into a \n'
+                                              'dictionary, which maintains the popularity of each name. The \n'
                                               'names are sorted by popularity, and the ones that are most often \n'
                                               'mentioned are returned.'
                     },
@@ -125,11 +125,19 @@ class Result:
                 'mappings': {
                     'nominees': {
                         'method': 'detected',
-                        'method_description': ''
+                        'method_description': 'Both nominees and presenters are mapped to their awards by \n'
+                                              'maintaining the timestamps on tweets throughout the program. \n'
+                                              'We are thus able to detect when an award was given. These times \n'
+                                              'are passed into a function that procedurally generates regular \n'
+                                              'expressions that match tweets that were tweeted around a certain \n'
+                                              'time. We look at a window of 5 minutes after a winner is \n'
+                                              'announced for the nominees and map the results to the winner\'s \n'
+                                              'award.'
                     },
                     'presenters': {
                         'method': 'detected',
-                        'method_description': ''
+                        'method_description': 'Same as nominees, but with a window of 2 minutes before an award \n'
+                                              'is announced.'
                     }
                 }
             },
