@@ -15,7 +15,7 @@ from util import vprint
 import util
 
 
-def run(db, target, event):
+def run(db, target, event, event2):
     event.wait()  # Wait for start_time to be set
     vprint('Received start time. Finding winners...')
     raw_winners = read_winners(db, target)
@@ -28,6 +28,7 @@ def run(db, target, event):
     consolidated_winners = super_consolidate(top_winners)
     sorted_super = sorted(consolidated_winners.items(), key=sort_winners, reverse=True)
     target.winners = match_to_awards(sorted_super)
+    event2.set()
 
 
 def sort_winners(key):

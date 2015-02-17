@@ -31,6 +31,7 @@ nominees = re.compile(r'\bnomi?')
 eehhhh = re.compile(r'(.*) should(?:(?:\'ve)|(?: have))(?: been (.*)\W?)?', re.I)
 eh = re.compile(r'(if (.*) wins)', re.I)
 
+
 #  -- Winners -- #
 
 winners = re.compile(r'(?=.*best)\bw[io]n', re.I)
@@ -45,6 +46,34 @@ if util.search_twitter_handles:
 winner_models.append(re.compile(r'(.*) w[io]n.*' + best_str, re.I))
 
 twitter_handel = re.compile(r'(@\w+)')
+
+
+# -- Time Manipulation --#
+
+def time_model(hour, minute, offset):
+    s = r'%02d:%02d:' % (hour, minute + offset)
+    return re.compile(s)
+
+
+# def get_hour_minute(time_string):
+#     result = []
+#     t = re.match(r'([0-9]{2}):([0-9]{2}):([0-9]{2})', time_string)
+#     result[0] = t.group(1)
+#     result[1] = t.group(2)
+#     result[2] = t.group(3)
+#     return result
+#
+#
+# def generate_time_models(hour, minute, second, range, direction):
+#     result = []
+#     if direction == "pre":
+#         for i in range:
+#             if int(minute) - (direction * i) < 0:
+#
+#             str = r'%s:%s:[0-9]{2}' % hour, minute - (direction * i),
+#             result.append(re.compile(str))
+#     return result
+
 
 
 # -- Result -- #

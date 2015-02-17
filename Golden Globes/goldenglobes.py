@@ -18,6 +18,7 @@ import modules.process_hosts as process_hosts
 import modules.process_start_time as process_start_time
 import modules.process_winners as process_winners
 import modules.process_nominees as process_nominees
+import modules.process_presenters_and_noms as process_presenters
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint
@@ -49,7 +50,7 @@ def process_tweets(db, result):
     """Calls helper (multithreaded) functions to process tweets as they arrive"""
 
     # Define events that allow threads to communicate and wait for one another:
-    event_names = ['start_time_set']
+    event_names = ['start_time_set', 'winners_found']
 
     events = {}
     for event_name in event_names:
@@ -62,12 +63,15 @@ def process_tweets(db, result):
     threading.Thread(name='Process Start Time',
                      target=process_start_time.run,
                      args=(db, result, events['start_time_set'])).start()
+    threading.Thread(name='Process Winners',
+                     target=process_winners.run,
+                     args=(db, result, events['start_time_set'], events['winners_found'])).start()
     # threading.Thread(name='Process Nominees',
     #                  target=process_nominees.run,
     #                  args=(db, result)).start()
-    threading.Thread(name='Process Winners',
-                     target=process_winners.run,
-                     args=(db, result, events['start_time_set'])).start()
+    threading.Thread(name='Process Presenters',
+                     target=process_presenters.run,
+                     args=(db, result, events['winners_found'])).start()
 
     main_thread = threading.currentThread()
     for thread in threading.enumerate():
