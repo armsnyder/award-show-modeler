@@ -10,7 +10,7 @@ def optional_space(text):
     return text.replace(' ', ' ?')
 
 # TODO: generalize names for all shows
-name = re.compile(r'\b(?!Golden|Best)([A-Z]([a-z]+|[.A-Z] ?){1,3} )[A-Z][a-z][A-Z]?[a-z]*')
+name = re.compile(r'\b(?!Golden|Best)(?:[A-Z](?:[a-z]+|[.A-Z] ?){1,3} )[A-Z][a-z][A-Z]?[a-z]*')
 subjunctive = re.compile(r'\bhop[ei]|\bwish|\bwant|\bshould', re.I)
 congrat = re.compile(r'congrats|congratulations', re.I)
 
@@ -34,7 +34,7 @@ eh = re.compile(r'(if (.*) wins)', re.I)
 #  -- Winners -- #
 
 winners = re.compile(r'(?=.*best)\bw[io]n', re.I)
-best_str = r'([# ]best.+?)(?:!|\.|\?|\bon\b|\bfrom|\bfor|\bat)'
+best_str = r'(\bbest.+?)(?:!|\.|\?|\bon\b|\bfrom|\bfor|\bat)'
 winner_models = [
     re.compile(r'([@#]\w+) w[io]n.*' + best_str, re.I),
     re.compile(r'\bcongrat.*? (?:to )?(.*?) (?:\bon\b|\bfrom|\bfor).*' + best_str, re.I),
@@ -45,6 +45,12 @@ if util.search_twitter_handles:
 winner_models.append(re.compile(r'(.*) w[io]n.*' + best_str, re.I))
 
 twitter_handel = re.compile(r'(@\w+)')
+
+
+# -- Result -- #
+
+output = re.compile(r'output_(\d+)\.json')
+
 
 # -- Obscure -- #
 
