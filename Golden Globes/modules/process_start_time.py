@@ -6,6 +6,8 @@
 
 import datetime
 from dateutil import tz
+import pytz
+import calendar
 
 import regex
 import util
@@ -27,14 +29,16 @@ def run(db, target, event, limit=None):
         hour = int(match.group(1))
         if match.group(2) == 'pm':
             hour += 12
-        tweet_time = datetime.datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')\
+        # tweet_time = datetime.datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')\
+        tweet_time = datetime.datetime.fromtimestamp(int(tweet['timestamp_ms']) / 1e3)\
             .replace(tzinfo=utc_zone).astimezone(from_zone)
         res_time = datetime.datetime(tweet_time.year, tweet_time.month, tweet_time.day, hour, tzinfo=from_zone)\
             .astimezone(utc_zone)
-        if res_time in result:
-            result[res_time] += 1
+        res_timestamp = calendar.timegm(res_time.utctimetuple())
+        if res_timestamp in result:
+            result[res_timestamp] += 1
         else:
-            result[res_time] = 1
+            result[res_timestamp] = 1
         i += 1
     if result:
         target.start_time = sorted(result, key=result.get, reverse=True)[0]
