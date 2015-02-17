@@ -101,12 +101,11 @@ class Result:
                     },
                     'nominees': {
                         'method': 'detected',
-                        'method_description': 'A regular expression is procedurally generated to match a range of \n'
-                                              'tweet timestamps in the database. For every award, an estimated \n'
-                                              'time of conferral is used as an anchor time to collect a cursor \n'
-                                              'of tweets which are matched first to the regex \'nominees\' and \n'
-                                              'then to the regex for names to extract probable nominees. The most \n'
-                                              'popular names that are not hosts or winners are selected.'
+                        'method_description': 'For every award, an estimated time of conferral is used as an \n'
+                                              'anchor time to collect a cursor of tweets which are matched first \n'
+                                              'to the regex \'nominees\' and \n then to the regex for names to \n'
+                                              'extract probable nominees. The most popular names that are not \n'
+                                              'hosts or winners are selected.'
                     },
                     'awards': {
                         'method': 'detected',

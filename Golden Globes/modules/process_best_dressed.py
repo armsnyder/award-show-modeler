@@ -1,10 +1,4 @@
-# Processes tweets to find the best/worst dressed.
-# TODO: Find a way to display pictures (URL-based?)
-# Tried the above. Turns out that the media_url is not included in this JSON,
-# so trying to just find most popular names instead
-# This wouldn't have been great without a GUI anyway.
-# TODO: Figure out the best popularity ratio. Spit out a top 5 list in Result.py?
-# for top k results, run edit distance on each pair to get rid of misspellings.
+# Processes tweets to find the best dressed
 
 from __future__ import division
 import operator
@@ -14,7 +8,6 @@ import nltk
 import regex
 from util import vprint
 import util
-import urllib2
 
 
 def run(db, target):
@@ -44,65 +37,3 @@ def run(db, target):
         else:
             break
     return
-
-
-# TODO: Use our util.common_words as a stop list, which already includes the event name (Golden Globes)
-def ignore_name(name):
-    if name[0] == ('Golden' or 'Red' or 'Vote' or 'VOTE'):
-        return True
-    return False
-
-
-# everything below here is a failed attempt
-
-# def read_best_dressed(db, target):
-#     tweets = db.collection.find({'text': regex.best_dressed})
-#     # Only read in tweets that contain images
-#     for tweet in tweets:
-#         if tweet['entities']['media']['media_url']:
-#             text = tweet['text']
-#             url = tweet['entities']['media']['media_url']
-#         else:
-#             continue
-#     together = [text, url]
-#     return together
-
-
-
-# def run(db, target):
-#     vprint('Processing Best Dressed...')
-#     tweets = db.collection.find({'text': regex.best_dressed})
-#     text = [tweet['text'] for tweet in tweets]
-#     urls = [(tweet['entities']['media_url'] if len(tweet['entities']['media_url']) >= 1 else None) for tweet in tweets]
-#     text_url = [text, urls]
-#     target.best_dressed = text_url[1]
-
-
-# def run(db, target):
-#     vprint('Processing Best Dressed...')
-#     best_dressed = {}
-#     cursor = db.collection.find({'text': regex.best_dressed})
-#     for tweet in cursor.entities.setdefault('media', []):
-#         best_dressed.append(tweet['media_url'])
-#
-
-
-# def run(db, target):
-#     vprint('Processing Red Carpet...')
-#     result = {}
-#     cursor = db.collection.find({'text': regex.best_dressed})
-#     i = 0
-#     for tweet in cursor:
-#         if limit and i > limit:
-#             break
-#         tweet_text = tweet['text']
-#         tweet_url = tweet['entities']['media_url']
-#         tokens = nltk.word_tokenize(tweet_text)
-#         bgs = nltk.bigrams(tokens)
-#         for name in bgs:
-#             if name[0][0].isupper() and name[1][0].isupper():
-#                 if name in result:
-#                     result[name] += 1
-#                 else:
-#                     result[name] = 1
-#         i += 1
