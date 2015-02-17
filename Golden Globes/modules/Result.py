@@ -7,6 +7,7 @@ import datetime
 import json
 import os
 import util
+import itertools
 
 import regex
 
@@ -17,8 +18,8 @@ class Result:
         self.start_time = None
         self.hosts = []
         self.winners = []
-        self.presenters = {}
-        self.nominees = {}
+        self.presenters = []
+        self.nominees = []
         self.best_dressed = []
         self.worst_dressed = []
         self.autograder_result = {}
@@ -127,20 +128,20 @@ class Result:
                     'hosts': self.hosts,
                     'winners': [winner for winner, award, time in self.winners],
                     'awards': [award for winner, award, time in self.winners],
-                    'presenters': [],
-                    'nominees': []
+                    'presenters': itertools.chain.from_iterable(self.presenters),
+                    'nominees': itertools.chain.from_iterable(self.nominees)
                 },
                 'structured': {}
             }
         }
 
         # Structured
-        for winner, award, time in self.winners:
-            self.autograder_result['data']['structured'][award] = {
-                'nominees': [],
-                'winner': winner,
-                'presenters': []
-            }        
+        for i in range(len(self.winners)):
+            self.autograder_result['data']['structured'][self.winners[i][1]] = {
+                'nominees': list(self.nominees[i]),
+                'winner': self.winners[i][0],
+                'presenters': list(self.presenters[i])
+            }
 
     def show_best_dressed(self):
         best_string = 'Best Dressed: '
