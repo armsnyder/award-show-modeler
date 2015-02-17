@@ -37,7 +37,7 @@ def main():
     Executes the Golden Globes program, which analyzes a set of tweets and outputs information about the event that
     they are describing.
     """
-
+    util.script_path = os.path.dirname(os.path.realpath(__file__))
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
     # raw_input('Shall we begin execution? ')
@@ -71,9 +71,9 @@ def process_tweets(db, result):
     # threading.Thread(name='Process Nominees',
     #                  target=process_nominees.run,
     #                  args=(db, result)).start()
-    threading.Thread(name='Process Presenters',
-                     target=process_presenters.run,
-                     args=(db, result, events['winners_found'])).start()
+    # threading.Thread(name='Process Presenters',
+    #                  target=process_presenters.run,
+    #                  args=(db, result, events['winners_found'])).start()
     threading.Thread(name='Best Dressed',
                      target=process_best_dressed.run,
                      args=(db, result)).start()
@@ -95,5 +95,4 @@ def process_tweets(db, result):
 
 
 if __name__ == '__main__':
-    util.script_path = os.path.dirname(os.path.realpath(__file__))
     main()
