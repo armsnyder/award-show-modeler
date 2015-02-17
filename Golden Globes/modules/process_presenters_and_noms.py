@@ -11,7 +11,7 @@ import util
 def run(db, target, event):
     event.wait()
     util.vprint("Winners received. finding presenters and nominees...")
-    queue = list(target.winners)
+#    queue = list(target.winners)
 #    current_winner = queue.pop(0)
     for winner, value, time in target.winners:
         presenter_names = {}
@@ -19,9 +19,13 @@ def run(db, target, event):
         for i in [-1, 1]:
             if i == -1:
                 current_dict = presenter_names
+                start = -180
+                end = 0
             else:
                 current_dict = nominee_names
-            cursor = db.collection.find({'created_at': regex.delta_time(time, i*180, 90+90*i)})
+                start = 0
+                end = 360
+            cursor = db.collection.find({'created_at': regex.delta_time(time, start, end)})
             for tweet in cursor:
                 if i == 1 and not regex.eehhhh.match(tweet['text']):
                     continue
@@ -45,7 +49,7 @@ def run(db, target, event):
         if winner in n:
             n.remove(winner)
         if len(p) > 2:
-            target.presenters.append((p[0], p[1]))
+            target.presenters.append((p[0][0], p[1][0]))
         else:
             target.presenters.append(())
         if len(n) > 5:
