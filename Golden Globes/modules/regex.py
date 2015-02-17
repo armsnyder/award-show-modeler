@@ -120,9 +120,9 @@ def dt_helper(start, end, phase='day', cutoff=0):
             return dt_helper(start, datetime.datetime(start.year, start.month, start.day, 23, 59, 59), 'hour')
         else:
             if start.hour == end.hour:
-                return '(' + start_str + ':' + dt_helper(start, end, 'min') + ')'
+                return '(?:' + start_str + ':' + dt_helper(start, end, 'min') + ')'
             else:
-                return '(' + \
+                return '(?:' + \
                 start_str + ':' + dt_helper(start, end, 'min', -1) + '|' + \
                 end_str + ':' + dt_helper(start, end, 'min', 1) + ')'
     elif phase == 'min':
@@ -134,13 +134,13 @@ def dt_helper(start, end, phase='day', cutoff=0):
             return dt_helper(start, datetime.datetime(start.year, start.month, start.day, start.hour, 59, 59), 'min')
         else:
             if start.minute == end.minute:
-                return '(' + start_str + ')'
+                return '(?:' + start_str + ')'
             else:
                 minute_diff = end.minute - start.minute
                 if minute_diff == 1:
-                    return '(' + start_str + '|' + end_str + ')'
+                    return '(?:' + start_str + '|' + end_str + ')'
                 else:
-                    result = '(' + start_str + '|'
+                    result = '(?:' + start_str + '|'
                     for i in range(start.minute+1, end.minute):
                         result += '%02d' % i + '|'
                     result += end_str + ')'
