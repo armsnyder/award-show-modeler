@@ -10,6 +10,7 @@ import json
 from util import vprint
 from util import warning
 from ProgressBar import ProgressBar
+import util
 
 
 class Database:
@@ -102,4 +103,4 @@ class Database:
         match = re.search(r'\w+.json', text)
         if not match:
             result += '.json'
-        return result
+        return util.get_path(result)
