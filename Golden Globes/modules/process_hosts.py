@@ -3,7 +3,6 @@
 # tweets. Finally, the results are filtered by popularity to discern which are likely to be names of hosts.
 
 from __future__ import division
-import nltk
 import operator
 
 import util
@@ -17,15 +16,12 @@ def run(db, target, limit=None):
     for tweet in cursor:
         if limit and i > limit:
             break
-        tweet_text = tweet['text']
-        tokens = nltk.word_tokenize(tweet_text)
-        bgs = nltk.bigrams(tokens)  # TODO: Not robust
-        for name in bgs:
-            if name[0][0].isupper() and name[1][0].isupper():
-                if name in result:
-                    result[name] += 1
-                else:
-                    result[name] = 1
+        names = regex.name.findall(tweet['text'])
+        for name in names:
+            if name in result:
+                result[name] += 1
+            else:
+                result[name] = 1
         i += 1
 
     # This part ensured only the most popular hits are returned

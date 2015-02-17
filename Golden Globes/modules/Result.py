@@ -4,6 +4,12 @@
 # ambitious.
 
 import datetime
+import json
+import os
+import util
+
+import regex
+
 
 class Result:
     def __init__(self):
@@ -13,6 +19,9 @@ class Result:
         self.winners = []
         self.presenters = {}
         self.nominees = {}
+        self.best_dressed = []
+        self.worst_dressed = []
+        self.autograder_result = {}
 
     def print_results(self):
         print ''
@@ -22,6 +31,10 @@ class Result:
         print self.hosts_string()
         print ''
         print self.display_winners()
+        print ''
+        print self.show_best_dressed()
+        print ''
+        print self.show_worst_dressed()
         print ''
         return
 
@@ -33,7 +46,7 @@ class Result:
         host_string = 'Hosts: '
         number_of_hosts = len(self.hosts)
         for i in range(number_of_hosts):
-            host_string += self.join_name(self.hosts[i])
+            host_string += self.hosts[i]
             if i == number_of_hosts-2:
                 host_string += ' and '
             elif i == number_of_hosts-1:
@@ -48,3 +61,109 @@ class Result:
         for winner, award, time in self.winners:
             f += winner + ': ' + award + ' at ' + time.strftime("%H:%M:%S") + '\n'
         return f
+
+    def print_output_file(self):
+        output_dir = util.get_path(util.output_path)
+        if not self.autograder_result:
+            self.compile_autograder_result()
+        if not os.path.isdir(output_dir):
+            os.makedirs(output_dir)
+        files_nums_in_dest = []
+        file_num = 0
+        for f in os.listdir(output_dir):
+            if os.path.isfile(os.path.join(output_dir, f)):
+                match = regex.output.search(f)
+                if match:
+                    files_nums_in_dest.append(int(match.group(1)))
+        for i in range(1, 99):
+            if i not in files_nums_in_dest:
+                file_num = i
+                break
+        f_o_name = 'output_' + str(file_num) + '.json'
+        f_o_path = os.path.join(output_dir, f_o_name)
+        with open(f_o_path, 'w') as f_o:
+            json.dump(self.autograder_result, f_o)
+        return os.path.abspath(str(f_o_path))
+
+    def compile_autograder_result(self):
+        self.autograder_result = {
+            'metadata': {
+                'year': self.start_time.strftime("%Y"),
+                'names': {
+                    'hosts': {
+                        'method': 'detected',
+                        'method_description': 'The tweets are filtered first by the regex \'hosts\' and second \n'
+                                              'by a regex we wrote to extract names. These names are placed into \n'
+                                              'a dictionary, which maintains the popularity of each name. The \n'
+                                              'names are sorted by popularity, and the ones that are most often \n'
+                                              'mentioned are returned.'
+                    },
+                    'nominees': {
+                        'method': 'detected',
+                        'method_description': ''
+                    },
+                    'awards': {
+                        'method': 'detected',
+                        'method_description': ''
+                    },
+                    'presenters': {
+                        'method': 'detected',
+                        'method_description': ''
+                    }
+                },
+                'mappings': {
+                    'nominees': {
+                        'method': 'detected',
+                        'method_description': ''
+                    },
+                    'presenters': {
+                        'method': 'detected',
+                        'method_description': ''
+                    }
+                }
+            },
+            'data': {
+                'unstructured': {
+                    'hosts': self.hosts,
+                    'winners': [winner for winner, award, time in self.winners],
+                    'awards': [award for winner, award, time in self.winners],
+                    'presenters': [],
+                    'nominees': []
+                },
+                'structured': {}
+            }
+        }
+
+        # Structured
+        for winner, award, time in self.winners:
+            self.autograder_result['data']['structured'][award] = {
+                'nominees': [],
+                'winner': winner,
+                'presenters': []
+            }        
+
+    def show_best_dressed(self):
+        best_string = 'Best Dressed: '
+        number_of_best = len(self.best_dressed)
+        for name in range(number_of_best):
+            best_string += self.join_name(self.best_dressed[name])
+            if name == number_of_best-2:
+                best_string += ' and '
+            elif name == number_of_best-1:
+                best_string += '.'
+            else:
+                best_string += ', '
+        return best_string
+
+    def show_worst_dressed(self):
+        worst_string = 'Worst Dressed: '
+        number_of_worst = len(self.worst_dressed)
+        for name in range(number_of_worst):
+            worst_string += self.join_name(self.worst_dressed[name])
+            if name == number_of_worst-2:
+                worst_string += ' and '
+            elif name == number_of_worst-1:
+                worst_string += '.'
+            else:
+                worst_string += ', '
+        return worst_string

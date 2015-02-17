@@ -10,6 +10,7 @@ import json
 from util import vprint
 from util import warning
 from ProgressBar import ProgressBar
+import util
 
 
 class Database:
@@ -22,7 +23,7 @@ class Database:
         self.collection_name = self.format_collection_name(collection)
         self.json_name = self.format_json_name(collection)
         self.connect()
-        self.access(self.collection_name)
+        self.access(db)
         self.load_collection(force_reload)
         return
 
@@ -102,4 +103,4 @@ class Database:
         match = re.search(r'\w+.json', text)
         if not match:
             result += '.json'
-        return result
+        return util.get_path(result)

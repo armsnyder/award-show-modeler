@@ -9,13 +9,14 @@ from dateutil import tz
 import twitter
 import nltk
 import math
+from operator import itemgetter
 
 import regex
 from util import vprint
 import util
 
 
-def run(db, target, event):
+def run(db, target, event, event2):
     event.wait()  # Wait for start_time to be set
     vprint('Received start time. Finding winners...')
     raw_winners = read_winners(db, target)
@@ -28,6 +29,7 @@ def run(db, target, event):
     consolidated_winners = super_consolidate(top_winners)
     sorted_super = sorted(consolidated_winners.items(), key=sort_winners, reverse=True)
     target.winners = match_to_awards(sorted_super)
+    event2.set()
 
 
 def sort_winners(key):
@@ -177,11 +179,23 @@ def match_to_awards(winners):
         for award, time in value:
             award_list.append(award)
             time_list.append(time)
-        award_result = max(set(award_list), key=award_list.count)
+        award_result = max(set(award_list), key=award_list.count) # select_best(award_list) 
         time_list = sorted(time_list, key=time_to_seconds)
         time_result = time_list[int(math.floor(len(time_list)*util.award_time_percentile))]
         result.append((winner, award_result, time_result))
     return sorted(result, key=sort_by_time)
+
+
+def select_best(award_list):
+    buffy = {}
+    for award in award_list:
+        if award in buffer:
+            buffy[award] += 1
+        else:
+            buffy[award] = 1
+    sorted_list = sorted(buffy, key=itemgetter(1), reverse=True)
+    top_list = sorted_list[:math.floor(len(sorted_list)*util.award_name_threshold)]
+    return max(set(top_list), key=award_list.count)
 
 
 def time_to_seconds(time):
