@@ -41,6 +41,7 @@ def main():
     result = Result()
     # raw_input('Shall we begin execution? ')
     process_tweets(db, result)
+    db.conn.close()
     result.print_results()
     output = result.print_output_file()
     if cmd_line.args.run_autograder:
@@ -61,6 +62,12 @@ def process_tweets(db, result):
     threading.Thread(name='Process Hosts',
                      target=process_hosts.run,
                      args=(db, result)).start()
+    threading.Thread(name='Best Dressed',
+                     target=process_best_dressed.run,
+                     args=(db, result)).start()
+    threading.Thread(name='Worst Dressed',
+                     target=process_worst_dressed.run,
+                     args=(db, result)).start()
     threading.Thread(name='Process Start Time',
                      target=process_start_time.run,
                      args=(db, result, events['start_time_set'])).start()
@@ -70,18 +77,6 @@ def process_tweets(db, result):
     threading.Thread(name='Process Presenters and Nominees',
                      target=process_presenters_and_noms.run,
                      args=(db, result, events['winners_found'])).start()
-    # threading.Thread(name='Process Nominees',
-    #                  target=process_nominees.run,
-    #                  args=(db, result)).start()
-    # threading.Thread(name='Process Presenters',
-    #                  target=process_presenters.run,
-    #                  args=(db, result, events['winners_found'])).start()
-    threading.Thread(name='Best Dressed',
-                     target=process_best_dressed.run,
-                     args=(db, result)).start()
-    threading.Thread(name='Worst Dressed',
-                     target=process_worst_dressed.run,
-                     args=(db, result)).start()
 
     main_thread = threading.currentThread()
     for thread in threading.enumerate():

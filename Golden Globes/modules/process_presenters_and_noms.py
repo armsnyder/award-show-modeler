@@ -19,13 +19,13 @@ def run(db, target, event):
         for i in [-1, 1]:
             if i == -1:
                 current_dict = presenter_names
-                start = -180
-                end = 0
+                start = time - 180
+                end = time
             else:
                 current_dict = nominee_names
-                start = 0
-                end = 360
-            cursor = db.collection.find({'created_at': regex.delta_time(time, start, end)})
+                start = time
+                end = time + 360
+            cursor = db.collection.find({'timestamp_ms': {'$gt': str(start), '$lt': str(end)}})
             for tweet in cursor:
                 if i == 1 and not regex.eehhhh.match(tweet['text']):
                     continue
@@ -53,7 +53,7 @@ def run(db, target, event):
         else:
             target.presenters.append(())
         if len(n) > 5:
-            target.nominees.append((n[0], n[1], n[2], n[3]))
+            target.nominees.append((n[0][0], n[1][0], n[2][0], n[3][0]))
         else:
             target.nominees.append(())
     util.vprint("Finished Presenters and Noms")

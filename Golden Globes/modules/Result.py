@@ -60,7 +60,7 @@ class Result:
         """Not neally done....."""
         f = ''
         for winner, award, time in self.winners:
-            f += winner + ': ' + award + ' at ' + time.strftime("%H:%M:%S") + '\n'
+            f += winner + ': ' + award + ' at ' + datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S") + '\n'
         return f
 
     def print_output_file(self):
@@ -89,7 +89,7 @@ class Result:
     def compile_autograder_result(self):
         self.autograder_result = {
             'metadata': {
-                'year': self.start_time.strftime("%Y"),
+                'year': datetime.datetime.fromtimestamp(self.start_time).strftime("%Y"),
                 'names': {
                     'hosts': {
                         'method': 'detected',
@@ -130,13 +130,13 @@ class Result:
                                               'We are thus able to detect when an award was given. These times \n'
                                               'are passed into a function that procedurally generates regular \n'
                                               'expressions that match tweets that were tweeted around a certain \n'
-                                              'time. We look at a window of 5 minutes after a winner is \n'
+                                              'time. We look at a window of 6 minutes after a winner is \n'
                                               'announced for the nominees and map the results to the winner\'s \n'
                                               'award.'
                     },
                     'presenters': {
                         'method': 'detected',
-                        'method_description': 'Same as nominees, but with a window of 2 minutes before an award \n'
+                        'method_description': 'Same as nominees, but with a window of 3 minutes before an award \n'
                                               'is announced.'
                     }
                 }

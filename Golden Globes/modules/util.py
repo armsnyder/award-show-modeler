@@ -11,12 +11,13 @@ import re
 
 verbose = True  # if True, will FORCE print out of additional debug messages using vprint
 search_twitter_handles = False
-default_collection = '$r/samples/goldenglobes2015_2_06_386000.json'  # default JSON input or collection name
+default_collection = '/Volumes/Navi/Users/flame2/Documents/Northwestern/Y3Q2/EECS 337/tweets.json'
+# default JSON input or collection name
 default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 default_output = '$r/output'  # default output JSON destination
 output_path = None
 script_path = None
-host_threshold = 0.8
+host_threshold = 0.85
 winner_threshold = 0.545
 award_name_threshold = 0.25
 award_time_percentile = 0.1

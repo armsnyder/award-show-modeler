@@ -138,8 +138,7 @@ def read_winners(db, target):
     cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False}})
     winner_bins = {}
     for tweet in cursor:
-        tweet_time = datetime.datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')\
-            .replace(tzinfo=tz.gettz('UTC'))
+        tweet_time = int(tweet['timestamp_ms']) / 1e3
         if weed_out(tweet, target, tweet_time):
             continue
         parsed_tweet = None
@@ -180,7 +179,7 @@ def match_to_awards(winners):
             award_list.append(award)
             time_list.append(time)
         award_result = max(set(award_list), key=award_list.count) # select_best(award_list)
-        time_list = sorted(time_list, key=time_to_seconds)
+        time_list = sorted(time_list)
         time_result = time_list[int(math.floor(len(time_list)*util.award_time_percentile))]
         result.append((winner, award_result, time_result))
     return sorted(result, key=sort_by_time)
@@ -211,4 +210,4 @@ def time_to_seconds(time):
 
 
 def sort_by_time(winner):
-    return time_to_seconds(winner[2])
+    return winner[2]
