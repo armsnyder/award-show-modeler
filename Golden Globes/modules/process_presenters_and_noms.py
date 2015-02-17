@@ -13,7 +13,6 @@ def run(db, target, event):
     queue = list(target.winners)
 #    current_winner = queue.pop(0)
     for winner, value, time in target.winners:
-        print winner + '\n'
         presenter_names = {}
         nominee_names = {}
         for i in [-1, 1]:
@@ -48,7 +47,6 @@ def run(db, target, event):
             target.presenters[winner] = (p[0], p[1])
         if len(n) > 5:
             target.nominees[winner] = (n[0], n[1], n[2], n[3])
-    print target.nominees
     return
 
 

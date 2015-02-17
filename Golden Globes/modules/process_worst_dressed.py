@@ -39,7 +39,12 @@ def run(db, target):
             most_popular = popularity
         percent_popularity = popularity / most_popular
         if percent_popularity > 0.5:
-            target.worst_dressed.append(name)
+            typo = False
+            for n in target.worst_dressed:
+                if nltk.metrics.edit_distance(n, name) < 4:
+                    typo = True
+            if not typo:
+                target.worst_dressed.append(name)
         else:
             break
     return
