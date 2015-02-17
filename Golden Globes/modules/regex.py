@@ -140,7 +140,7 @@ def dt_helper(start, end, phase='day', cutoff=0):
                 if minute_diff == 1:
                     return '(' + start_str + '|' + end_str + ')'
                 else:
-                    result = '(' + start_str + ':' + dt_helper(start, end, 'sec', -1) + '|'
+                    result = '(' + start_str + '|'
                     for i in range(start.minute+1, end.minute):
                         result += '%02d' % i + '|'
                     result += end_str + ')'
