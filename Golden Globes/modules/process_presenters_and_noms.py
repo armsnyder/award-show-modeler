@@ -1,6 +1,5 @@
 import nltk
 import operator
-import sys
 import datetime
 from dateutil import tz
 
