@@ -18,6 +18,7 @@ output_path = None
 script_path = None
 host_threshold = 0.8
 winner_threshold = 0.545
+award_name_threshold = 0.25
 award_time_percentile = 0.1
 event_name = 'Golden Globes'
 twitter_key = 'DYcq5c6vadVEe4l8Xnd5Dhu29'
