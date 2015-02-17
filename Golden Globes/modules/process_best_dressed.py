@@ -45,6 +45,7 @@ def run(db, target):
     return
 
 
+# TODO: Use our util.common_words as a stop list, which already includes the event name (Golden Globes)
 def ignore_name(name):
     if name[0] == ('Golden' or 'Red' or 'Vote' or 'VOTE'):
         return True

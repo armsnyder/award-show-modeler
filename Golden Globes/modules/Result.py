@@ -89,25 +89,37 @@ class Result:
         self.autograder_result = {
             'metadata': {
                 'year': self.start_time.strftime("%Y"),
-                'hosts': {
-                    'method': 'detected',
-                    'method_description': 'The tweets are filtered first by the regex \'hosts\' and second \n'
-                                          'by a regex we wrote to extract names. These names are placed into \n'
-                                          'a dictionary, which maintains the popularity of each name. The \n'
-                                          'names are sorted by popularity, and the ones that are most often \n'
-                                          'mentioned are returned.'
+                'names': {
+                    'hosts': {
+                        'method': 'detected',
+                        'method_description': 'The tweets are filtered first by the regex \'hosts\' and second \n'
+                                              'by a regex we wrote to extract names. These names are placed into \n'
+                                              'a dictionary, which maintains the popularity of each name. The \n'
+                                              'names are sorted by popularity, and the ones that are most often \n'
+                                              'mentioned are returned.'
+                    },
+                    'nominees': {
+                        'method': 'detected',
+                        'method_description': ''
+                    },
+                    'awards': {
+                        'method': 'detected',
+                        'method_description': ''
+                    },
+                    'presenters': {
+                        'method': 'detected',
+                        'method_description': ''
+                    }
                 },
-                'nominees': {
-                    'method': 'detected',
-                    'method_description': ''
-                },
-                'awards': {
-                    'method': 'detected',
-                    'method_description': ''
-                },
-                'presenters': {
-                    'method': 'detected',
-                    'method_description': ''
+                'mappings': {
+                    'nominees': {
+                        'method': 'detected',
+                        'method_description': ''
+                    },
+                    'presenters': {
+                        'method': 'detected',
+                        'method_description': ''
+                    }
                 }
             },
             'data': {

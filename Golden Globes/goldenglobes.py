@@ -36,7 +36,7 @@ def main():
     Executes the Golden Globes program, which analyzes a set of tweets and outputs information about the event that
     they are describing.
     """
-
+    util.script_path = os.path.dirname(os.path.realpath(__file__))
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
     # raw_input('Shall we begin execution? ')

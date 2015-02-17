@@ -1,7 +1,7 @@
 import json
 import sys
-from nltk.metrics import edit_distance,masi_distance
 import difflib
+from nltk.metrics import edit_distance
 from collections import Counter
 from pprint import pprint
 import os
@@ -47,9 +47,10 @@ def text(result,answer):
     return textscore
 
 def calc_awards(result,answer):
-    translation = {}
     problems = []
-    for r in result:
+    intersection = result.intersection(answer)
+    translation = dict(zip(intersection,intersection))
+    for r in (result-intersection):
         prepped = prep(r)
         rlist = set(prepped.split())
         if 'animated' in rlist:
@@ -137,15 +138,17 @@ def calc_awards(result,answer):
     for p in problems:
         print p
     # sum([edit_distance(t,translation[t])/float(max(len(t),len(translation[t]))) for t in translation])
+    score = calc_score(set([translation[a] if a in translation else a for a in result]),answer)
 
-    return translation, len(translation)
+    return score,translation
 
 def calc_translation(result,answer):
-    translation = {}
-    new_intersection = 0
+    intersection = result.intersection(answer)
+    translation = dict(zip(intersection,intersection))
+    scores = dict(zip(intersection, [1]*len(intersection)))
     score_by_results = {}
     score_by_answers = {}
-    for r in result:
+    for r in (result-intersection):
         score_by_results[r] = Counter()
         for a in answer:
             if a not in score_by_answers:
@@ -168,9 +171,13 @@ def calc_translation(result,answer):
                 flag = False
             elif (max_result[0] == r) or (score_by_results[r][answer_match] > score_by_answers[answer_match][max_result[0]]):
                 translation[r] = answer_match
-                change = score_by_results[r][answer_match]
+                change = 1-(edit_distance(r,answer_match)/float(max(len(r),len(answer_match))))
+                if answer_match in scores:
+                    scores[answer_match] = (scores[answer_match] + change)/2.0
+                else:
+                    scores[answer_match] = change
+                
                 # print "%s\t->\t%s:\t%f\n"%(r,answer_match,change)
-                new_intersection += change
                 flag = False
 
             cnt += 1
@@ -178,75 +185,45 @@ def calc_translation(result,answer):
                 # print "No result found.\n"
                 flag = False
             
-    return translation, new_intersection
+    return sum(scores.values()),translation
 
-def calc_score(result, answer, awds=False):
-    """Accepts two lists of strings and returns a score for how
-    closely they match, and a dictionary mapping result list items
-    to their closest match in the answer list"""
+def calc_score(result, answer):
     intersection = result.intersection(answer)
     len_intersection = len(intersection)
     len_union = len(result.union(answer))
     len_result = len(result)
     len_answer = len(answer)
-    new_intersection = len_intersection
 
-    translation = dict(zip(intersection,intersection))
     if len_result == len_answer and len_intersection == len_answer:
         m = 1.0
     elif len_intersection == len_result:
-        # all results are correct but some are missing
+        # all results correspond to a correct answer, but some 
+        # answers are missing
         m = 0.95
-        translation.update(dict(zip(answer-result,[""]*len(answer-result))))
+    elif len_intersection == len_answer:
+        # all answers correspond to a result, but there are
+        # some extra results as well
+        m = 0.9
+    elif len_intersection > 0:
+        # there is some post-translation intersection between
+        # results and answers.
+        m = 0.85
     else:
-        if awds:
-            trans, new_intersection = calc_awards(result, answer)
-        else:
-            trans, new_intersection = calc_translation(result,answer)
-        translation.update(trans)
+        return 0
 
-        if len_intersection == len_answer:
-            # correct results for entire answer list, but some extra
-            # results as well
-            m = 0.9
-        else:
-            new_result = set([translation[r] if r in translation else r for r in result])
-            intersection = new_result.intersection(answer)
-            len_intersection = len(intersection)
-            len_union = len(new_result.union(answer))
-            len_result = len(new_result)
-
-            if len_result == len_answer and len_intersection == len_answer:
-                m = 1.0
-            elif len_intersection == len_result:
-                # all results have a reasonable answer match but some are missing
-                m = 0.95
-            elif len_intersection == len_answer:
-                # all answers have a reasonable result match, but there are
-                # some extra results as well
-                m = 0.9
-            elif len_intersection > 0:
-                # when we translate, there is some intersection.
-                m = 0.85
-            else:
-                return 0, translation
-
-        len_intersection = new_intersection
-
-    return (len_intersection / float(len_union)) * m, translation
+    return (len_intersection / float(len_union)) * m
 
 def check_metadata(item,metadata):
-    if (item in metadata) and (metadata[item]['method'] == 'hardcoded'):
+    if metadata['method'] == 'hardcoded':
         print "The %s were hard coded.\n"%item
+        return 1
     else:
         print item
-        print metadata[item]['method']
-        print metadata[item]['method_description']
+        print metadata['method']
+        print metadata['method_description']
         print "\n1. Treat as hardcoded.\n2. Treat as scraped.\n3. Treat as detected."
-        decision = raw_input()
-        metadata[item]['method'] = decision_to_methods[decision]
 
-    return metadata            
+    return int(raw_input())            
 
 def lowercase(item):
     for i in item['unstructured']:
@@ -255,14 +232,32 @@ def lowercase(item):
     for award in item['structured']:
         new_award = {}
         for info_type in item['structured'][award]:
-            if info_type=='winner':
-                new_award[info_type] = item['structured'][award][info_type].lower()
+            new_info_type = info_type.lower()
+            if new_info_type=='winner':
+                new_award[new_info_type] = item['structured'][award][info_type].lower()
             else:
-                new_award[info_type] = [i.lower() for i in item['structured'][award][info_type]]
+                new_award[new_info_type] = [i.lower() for i in item['structured'][award][info_type]]
         structured[award.lower()] = new_award
     item['structured'] = structured
 
     return item
+
+def calc_weights(names, mappings):
+    weights = {'nominees': {}, 'presenters': {}, 'awards': {}, 'hosts': {}}
+
+    for item_type in ['nominees','presenters','awards','hosts']:
+        if item_type in mappings:
+            weights[item_type]['mappings'] = (check_metadata("%s - mappings"%item_type.title(),mappings[item_type]) - 1.0)/2.0
+        else:
+            weights[item_type]['mappings'] = 1.0
+
+        if item_type in names:
+            weights[item_type]['names'] = (check_metadata("%s - names"%item_type.title(),names[item_type]) - 1.0)/2.0
+        else:
+            weights[item_type]['mappings'] = 1.0
+
+    return weights
+
 
 def main(filename):
     with open(filename, 'r') as f:
@@ -271,39 +266,54 @@ def main(filename):
 
     answer_key = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                               'gg%sanswers.json'%str(results['metadata']['year']))
+
     with open(answer_key,'r') as f:
         answers = lowercase(json.load(f))
 
     scores = {'unstructured': {},'structured': {}}
     translation = {}
     total = 0
+    weights = calc_weights(results['metadata']['names'],results['metadata']['mappings'])
+
+    if set(results['data']['unstructured']['winners']) < set(results['data']['unstructured']['nominees']):
+        if weights['nominees']['mappings'] < 1:
+            weights['winners'] = {'names': 0.5, 'mappings': 0.5}
+        elif weights['nominees']['names'] < 1:
+            weights['winners'] = {'names': 0.5, 'mappings': 1.0}
+    else:
+        weights['winners'] = {'names': 1.0, 'mappings': 1.0}
 
     unstructuredstring = ""
+
     for item in results['data']['unstructured']:
-        weight = len(answers['unstructured'][item])
-        if item in results['metadata']:
-            results['metadata'] = check_metadata(item, results['metadata'])
-            weight = weight*(methods_to_decision[results['metadata'][item]['method']]-1.0)/2.0
-        if weight != 0:
-            score, trans = calc_score(set(results['data']['unstructured'][item]),set(answers['unstructured'][item]), item=="awards")
-            translation.update(trans)
-            scores['unstructured'][item] = weight*score
-            unstructuredstring += "\n%.2f x %3.2f\t%s\n"%(score,weight,item)
-        elif item == 'awards':
-            trans, temp = calc_awards(set(results['data']['unstructured'][item]),set(answers['unstructured'][item]))
-            translation.update(trans)
-        total += weight
+        size = weights[item]['names']*len(answers['unstructured'][item])
+        if item == "awards":
+            score, trans = calc_awards(set(results['data']['unstructured'][item]),set(answers['unstructured'][item]))
+        else:
+            score, trans = calc_translation(set(results['data']['unstructured'][item]),set(answers['unstructured'][item]))
+            if item == "winners":
+                score = calc_score(set([trans[w] if w in trans else w for w in results['data']['unstructured']['winners']]),set(answers['unstructured']['winners']))*size
+
+        translation.update(trans)
+        
+        if weights[item]['names'] != 0:
+            scores['unstructured'][item] = weights[item]['names']*score
+            unstructuredstring += "\n%.2f / %3.2f\t%s\n"%(score,size,item)
+
+        total += size
     pprint(translation)
     print "CALCULATING UNSTRUCTURED SCORES"
-    print "=============================\n"
+    print "============================="
+    print "Each name/title is worth one point. The autograder does its best\nto match the correct answers to your answers. You receive full credit\nfor each matching award, and the edit distance between matches is\nused to give partial credit for non-exact matches. Also, for winners\nand awards, there are penalties for too many or too few answers.\n"
     print unstructuredstring
     scores['unstructured']['overall'] = sum(scores['unstructured'].values())
     scores['unstructured']['total'] = total
     print "-----------------------------"
-    print "TOTAL\t%.2f / %.2f\n"%(scores['unstructured']['overall'],total)
-    print "\n=============================\n"
+    print "TOTAL\t%.2f / %.2f"%(scores['unstructured']['overall'],total)
+    print "\n============================="
     print "CALCULATING STRUCTURED SCORES"
-    print "=============================\n"
+    print "============================="
+    print "Using the translations generated during unstructured scoring,\n you are scored for accurately matching nominees, presenters, and\nwinners to award names (also determined using the translations dictionary).\nAlso, for presenters and nominees, there are penalties for too many or\ntoo few answers.\n"
     win_scores = []
     totals = {}
 
@@ -312,54 +322,58 @@ def main(filename):
             translated = translation[a]
             print translated
             for item in results['data']['structured'][a]:
-                if item in results['metadata']:
-                    length = len(answers['structured'][translated][item])
-                    weight = length*(methods_to_decision[results['metadata'][item]['method']]-1.0)/2.0
-                    if weight != 0:
-                        transitem = set([translation[r] if r in translation else r for r in results['data']['structured'][a][item]])
-                        if length > 0:
-                            score = (1 - masi_distance(set(answers['structured'][translated][item]),transitem))*length
-                            if item not in scores['structured']:
-                                scores['structured'][item] = score
-                                totals[item] = length
-                            else:
-                                scores['structured'][item] += score
-                                totals[item] += length
-                            print "\t%s:\t%.2f / %d"%(item.capitalize(),score,length)
-                elif item == "winner":
-                    weight = 1
-                    if results['data']['structured'][a]['winner'] in translation:
-                        if results['data']['structured'][a]['winner'] and (answers['structured'][translated]['winner'] == translation[results['data']['structured'][a]['winner']]):
-                            score = 1
+                if item == "winner":
+                    if len(results['data']['structured'][a]['winner']) == 0:
+                        size = 0
+                        score = 0
+                    else:
+                        size = weights['winners']['mappings']
+                        winner = results['data']['structured'][a]['winner']
+                        if (winner in translation) and (answers['structured'][translated]['winner'] == translation[winner]):
+                            score = size
                         else:
                             score = 0
-                    else:
-                        score = 0
 
-                    win_scores.append(score)
-                    print "\tWinner:\t%d"%score
+                    # print "\tWinner:\t%d"%score
+                else:
+                    length = len(answers['structured'][translated][item])
+                                       
+                    size = length*weights[item]['mappings']
 
-    print "=============================\n"
-    scores['structured']['winners'] = sum(win_scores)
+                    transitem = set([translation[r] if r in translation else r for r in results['data']['structured'][a][item]])
+                    if item == "nominees":
+                        transitem = (transitem - set(answers['structured'][translated]['winner'])) - set(results['data']['structured'][a]['winner'])
+                    score = calc_score(set(answers['structured'][translated][item]),transitem)*weights[item]['mappings']
+                if item not in scores['structured']:
+                    scores['structured'][item] = score
+                    totals[item] = size
+                else:
+                    scores['structured'][item] += score
+                    totals[item] += size
+                if size != 0:
+                    print "\t%s:\t%.2f / %2.2f"%(item.capitalize(),score,size)
+
+    print "============================="
     scores['structured']['overall'] = sum(scores['structured'].values())
-    scores['structured']['total'] = sum([totals[item] for item in totals]) + len(win_scores)
+    scores['structured']['total'] = sum([totals[item] for item in totals])
 
-    if 'nominees' in scores['structured']:
+    if ('nominees' in scores['structured']) and (totals['nominees'] > 0):
         print "Structured nominees score:  \t%.2f / %.2f"%(scores['structured']['nominees'], totals['nominees'])
-    if 'presenters' in scores['structured']:
+    if ('presenters' in scores['structured']) and (totals['presenters'] > 0):
         print "Structured presenters score:\t%.2f / %.2f"%(scores['structured']['presenters'],totals['presenters'])
-    print "Structured winners score:   \t%.2f / %.2f"%(scores['structured']['winners'],float(len(win_scores)))
+
+    print "Structured winners score:   \t%.2f / %.2f"%(scores['structured']['winner'],totals['winner'])
     
     print "-----------------------------"
     print "TOTAL                       \t%.2f / %.2f\n"%(scores['structured']['overall'],scores['structured']['total'])
-    print "\n=============================\n"
+    print "============================="
     print "CALCULATING TOTAL SCORES"
-    print "=============================\n"
+    print "============================="
 
     scores['overall'] = scores['unstructured']['overall'] + scores['structured']['overall']
     scores['total'] = scores['unstructured']['total'] + scores['structured']['total']
 
-    print "TOTAL\t%.2f / %.2f\n"%(scores['overall'],scores['total'])
+    print "TOTAL\t%.2f / %.2f"%(scores['overall'],scores['total'])
 
     with open('gg%sscores.json'%str(results['metadata']['year']),'w') as f:
         json.dump(scores,f)

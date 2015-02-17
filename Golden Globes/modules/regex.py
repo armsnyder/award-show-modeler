@@ -35,7 +35,7 @@ eh = re.compile(r'(if (.*) wins)', re.I)
 #  -- Winners -- #
 
 winners = re.compile(r'(?=.*best)\bw[io]n', re.I)
-best_str = r'(\bbest.+?)(?:!|\.|\?|\bon\b|\bfrom|\bfor|\bat)'
+best_str = r'(\bbest.+?)(?:!|\.|\?|\bon\b|\bfrom|\bfor|\bat|http)'
 winner_models = [
     re.compile(r'([@#]\w+) w[io]n.*' + best_str, re.I),
     re.compile(r'\bcongrat.*? (?:to )?(.*?) (?:\bon\b|\bfrom|\bfor).*' + best_str, re.I),
