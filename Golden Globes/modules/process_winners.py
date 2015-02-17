@@ -179,7 +179,7 @@ def match_to_awards(winners):
         for award, time in value:
             award_list.append(award)
             time_list.append(time)
-        award_result = select_best(award_list) # max(set(award_list), key=award_list.count)
+        award_result = max(set(award_list), key=award_list.count) # select_best(award_list) 
         time_list = sorted(time_list, key=time_to_seconds)
         time_result = time_list[int(math.floor(len(time_list)*util.award_time_percentile))]
         result.append((winner, award_result, time_result))
