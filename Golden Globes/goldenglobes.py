@@ -19,6 +19,8 @@ import modules.process_start_time as process_start_time
 import modules.process_winners as process_winners
 import modules.process_nominees as process_nominees
 import modules.process_presenters_and_noms as process_presenters
+import modules.process_best_dressed as process_best_dressed
+import modules.process_worst_dressed as process_worst_dressed
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint
@@ -72,6 +74,12 @@ def process_tweets(db, result):
     threading.Thread(name='Process Presenters',
                      target=process_presenters.run,
                      args=(db, result, events['winners_found'])).start()
+    threading.Thread(name='Best Dressed',
+                     target=process_best_dressed.run,
+                     args=(db, result)).start()
+    threading.Thread(name='Worst Dressed',
+                     target=process_worst_dressed.run,
+                     args=(db, result)).start()
 
     main_thread = threading.currentThread()
     for thread in threading.enumerate():

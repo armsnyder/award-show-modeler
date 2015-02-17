@@ -19,6 +19,8 @@ class Result:
         self.winners = []
         self.presenters = {}
         self.nominees = {}
+        self.best_dressed = []
+        self.worst_dressed = []
         self.autograder_result = {}
 
     def print_results(self):
@@ -30,7 +32,15 @@ class Result:
         print ''
         print self.display_winners()
         print ''
+        print self.show_best_dressed()
+        print ''
+        print self.show_worst_dressed()
+        print ''
         return
+
+    @staticmethod
+    def join_name(name):
+        return name[0] + ' ' + name[1]
 
     def hosts_string(self):
         host_string = 'Hosts: '
@@ -118,4 +128,30 @@ class Result:
                 'nominees': [],
                 'winner': winner,
                 'presenters': []
-            }
+            }        
+
+    def show_best_dressed(self):
+        best_string = 'Best Dressed: '
+        number_of_best = len(self.best_dressed)
+        for name in range(number_of_best):
+            best_string += self.join_name(self.best_dressed[name])
+            if name == number_of_best-2:
+                best_string += ' and '
+            elif name == number_of_best-1:
+                best_string += '.'
+            else:
+                best_string += ', '
+        return best_string
+
+    def show_worst_dressed(self):
+        worst_string = 'Worst Dressed: '
+        number_of_worst = len(self.worst_dressed)
+        for name in range(number_of_worst):
+            worst_string += self.join_name(self.worst_dressed[name])
+            if name == number_of_worst-2:
+                worst_string += ' and '
+            elif name == number_of_worst-1:
+                worst_string += '.'
+            else:
+                worst_string += ', '
+        return worst_string
