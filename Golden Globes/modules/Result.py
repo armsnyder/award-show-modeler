@@ -192,11 +192,10 @@ class Result:
         best_string = 'Best Dressed: '
         GUI.html_text_heading(best_string)
         number_of_best = len(self.best_dressed)
-        for name in self.best_dressed:
-            print(name)
+        for name in range(number_of_best):
             # GUI.html_text_add(name)
             # GUI.html_image_add(name)
-            best_string += self.join_name(name)
+            best_string += self.join_name(self.best_dressed[name])
             if name == number_of_best-2:
                 best_string += ' and '
             elif name == number_of_best-1:
@@ -212,7 +211,7 @@ class Result:
         for name in range(number_of_worst):
             # GUI.html_text_add(name)
             # GUI.html_image_add(name)
-            worst_string += self.join_name(name)
+            worst_string += self.join_name(self.worst_dressed[name])
             if name == number_of_worst-2:
                 worst_string += ' and '
             elif name == number_of_worst-1:
