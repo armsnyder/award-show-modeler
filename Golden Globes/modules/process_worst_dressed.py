@@ -1,9 +1,4 @@
-# Processes tweets to find the best/worst dressed.
-# TODO: Find a way to display pictures (URL-based?)
-# Tried the above. Turns out that the media_url is not included in this JSON,
-# so trying to just find most popular names instead
-# This wouldn't have been great without a GUI anyway.
-# TODO: Fix the Keira Knightley issue
+# Processes tweets to find the worst dressed
 
 from __future__ import division
 import operator
@@ -13,7 +8,6 @@ import nltk
 import regex
 from util import vprint
 import util
-import urllib2
 
 
 def run(db, target):
