@@ -16,11 +16,11 @@ default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 default_output = '$r/output'  # default output JSON destination
 output_path = None
 script_path = None
-host_threshold = 0.85
+host_threshold = 0.92
 winner_threshold = 0.545
 award_name_threshold = 0.25
 award_time_percentile = 0.1
-limit = 100  # Imposes limit on some tweet search processes
+limit = 500  # Imposes limit on some tweet search processes
 common_words = list(nltk.corpus.stopwords.words('english'))
 
 

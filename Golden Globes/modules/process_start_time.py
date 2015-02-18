@@ -13,6 +13,7 @@ import util
 def run(db, target, event, event_wait, limit=None):
     event_wait.wait()
     result = {}
+    backup_time = db.collection.find_one()['timestamp_ms']
     useful_tweets = db.collection.find({'text': regex.time})
     utc_zone = tz.gettz('UTC')
     i = 0
@@ -20,9 +21,11 @@ def run(db, target, event, event_wait, limit=None):
         if limit and i > limit:
             break
         tweet_text = tweet['text']
-        print tweet_text
         match = regex.time.search(tweet_text)
-        from_zone = tz.gettz(match.group(3))
+        tz_text = match.group(3)
+        if len(tz_text) == 2:
+            tz_text = tz_text[0]+'S'+tz_text[1]
+        from_zone = tz.gettz(tz_text)
         if not from_zone:
             continue
         hour = int(match.group(1))
@@ -33,6 +36,7 @@ def run(db, target, event, event_wait, limit=None):
         res_time = datetime.datetime(tweet_time.year, tweet_time.month, tweet_time.day, hour, tzinfo=from_zone)\
             .astimezone(utc_zone)
         res_timestamp = calendar.timegm(res_time.utctimetuple()) * 1000
+        print res_timestamp / 1000
         if res_timestamp in result:
             result[res_timestamp] += 1
         else:
@@ -41,5 +45,6 @@ def run(db, target, event, event_wait, limit=None):
     if result:
         target.start_time = sorted(result, key=result.get, reverse=True)[0]
     else:
-        util.warning('Failed to determine event start time', exit=True)
+        util.warning('Failed to determine event start time')
+        target.start_time = backup_time
     event.set()  # Tells other threads that rely on a start time that it has been set

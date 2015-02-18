@@ -30,7 +30,7 @@ hosts = re.compile(r'host', re.I)
 
 # -- Starting Time -- #
 
-time = re.compile(r'.*at (\d+):?\d* *([ap]m) ?(\w\w?\w?T)', re.I)
+time = re.compile(r'.*at (\d+):?\d* *([ap]m) ?(\w{1,3}T)', re.I)
 
 
 # -- Nominees -- #

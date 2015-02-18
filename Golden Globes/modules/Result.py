@@ -15,7 +15,7 @@ import regex
 class Result:
     def __init__(self):
         self.event_name = ''
-        self.start_time = None
+        self.start_time = 0
         self.hosts = []
         self.winners = []
         self.presenters = []
