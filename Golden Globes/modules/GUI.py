@@ -50,37 +50,37 @@ def gui_run(target):
     # m1.add(m1R)
 
     #two panes text
-    top = Label(m2, text="options")
+    top = Label(m2, text="OPTIONS")
     m2.add(top)
     # bottom = Label(m2, text="results")
     # m2.add(bottom)
 
     #top buttons
-    runButton = Button(top, text="RUN", fg="red", height=12, width=20, command=lambda: button_pressed(root, event_input))
+    runButton = Button(top, text="RUN", fg="red", height=12, width=20, command=lambda: button_pressed(root))
     runButton.pack(side=BOTTOM)
 
     html_label = Checkbutton(top, text="HTML Results Display", command=html_status)
     html_label.pack(side=BOTTOM)
 
-    event_input = event_entry = Entry(top, text="Event:")
-    event_entry.pack(side=BOTTOM)
+    # event_input = event_entry = Entry(top, text="Event:")
+    # event_entry.pack(side=BOTTOM)
 
-    event_label = Checkbutton(top, text="Event Name", justify=LEFT)
-    event_label.pack(side=BOTTOM)
+    # event_label = Checkbutton(top, text="Event Name", justify=LEFT)
+    # event_label.pack(side=BOTTOM)
 
-    json_reload = Checkbutton(top, text="Force Reload JSON", justify=LEFT, command=json_status)
-    json_reload.pack(side=BOTTOM)
+    # json_reload = Checkbutton(top, text="Force Reload JSON", justify=LEFT, command=json_status)
+    # json_reload.pack(side=BOTTOM)
 
-    autograder_running = Checkbutton(top, text="Run Autograder", justify=LEFT, command=autograder_status)
-    autograder_running.pack(side=BOTTOM)
+    # autograder_running = Checkbutton(top, text="Run Autograder", justify=LEFT, command=autograder_status)
+    # autograder_running.pack(side=BOTTOM)
 
-    twitter_handles = Checkbutton(top, text="Search Twitter Handles", justify=LEFT, command=search_handles)
+    twitter_handles = Checkbutton(top, text="Search Twitter Handles (takes longer)", justify=LEFT, command=search_handles)
     twitter_handles.pack(side=BOTTOM)
 
     verbose = Checkbutton(top, text="Verbose Mode", justify=LEFT, command=run_verbose)
     verbose.pack(side=BOTTOM,)
 
-    options_label = Label(top, text="COMMAND LINE OPTIONS", width=40, bd=20)
+    options_label = Label(top, text="OPTIONS", width=40, bd=20)
     options_label.pack(side=BOTTOM)
 
     # head_label = Label(top, text="TEAM 1 GUI", width=40, bd=20)
@@ -89,10 +89,8 @@ def gui_run(target):
     top.mainloop()
 
 
-def button_pressed(window, event):
+def button_pressed(window):
     # print "RUN"
-    if (event != ""):
-        util.event_name = event
     window.destroy();
     return
 

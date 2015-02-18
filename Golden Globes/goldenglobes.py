@@ -12,6 +12,7 @@
 
 import threading
 import os
+import sys
 
 import modules.cmd_line as cmd_line
 import modules.process_hosts as process_hosts
@@ -39,14 +40,13 @@ def main():
     Executes the Golden Globes program, which analyzes a set of tweets and outputs information about the event that
     they are describing.
     """
-    GUI.gui_run(None)
-    print util.event_name
-    print util.search_twitter_handles
+
+    if len(sys.argv) == 1:
+        GUI.gui_run(None)
 
     util.script_path = os.path.dirname(os.path.realpath(__file__))
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
-    # raw_input('Shall we begin execution? ')
     process_tweets(db, result)
     db.conn.close()
     result.print_results()
