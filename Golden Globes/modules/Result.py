@@ -14,6 +14,7 @@ import regex
 
 class Result:
     def __init__(self):
+        self.timestamp_format = ''
         self.event_name = ''
         self.start_time = 0
         self.hosts = []
@@ -37,7 +38,7 @@ class Result:
         print ''
         print self.get_name_list(self.hosts, 'Hosts')
         print ''
-        print self.display_winners()
+        self.display_winners()
         print ''
         print self.get_name_list(self.best_dressed, 'Best Dressed')
         print ''
@@ -50,10 +51,19 @@ class Result:
         return name[0] + ' ' + name[1]
 
     def display_winners(self):
-        f = ''
-        for winner, award, time in self.winners:
-            f += winner + ': ' + award + ' at ' + util.timestamp_to_string(time, '%H:%M:%S') + '\n'
-        return f
+        print '[AWARDS]'
+        for i in range(len(self.winners)):
+            print '  Title:', self.winners[i][1]
+            print '  Time:', util.timestamp_to_string(self.winners[i][2], '%H:%M:%S')
+            if self.presenters[i]:
+                print '  Presenter',
+                if len(self.presenters[i]) > 1:
+                    print 's',
+                print ':', self.get_name_list(self.presenters[i])
+            if self.nominees[i]:
+                print '  Nominees:', self.get_name_list(self.nominees[i])
+            print '  Winner:', self.winners[i][0]
+            print ''
 
     @staticmethod
     def get_name_list(name_list, title=None):
@@ -134,10 +144,7 @@ class Result:
                     },
                     'presenters': {
                         'method': 'detected',
-                        'method_description': 'Detected at the same time as nominees, the regex generator for time \n'
-                                              'ranges is used to match a cursor of tweets from just before a \n'
-                                              'certain award is conferred. Those tweets are matched with the regex \n'
-                                              'for names, and the most popular names who are not winners are returned.'
+                        'method_description': 'Detected at the same time as nominees, using an identical method'
                     }
                 },
                 'mappings': {

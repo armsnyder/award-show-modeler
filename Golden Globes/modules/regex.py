@@ -11,7 +11,7 @@ def optional_space(text):
     return text.replace(' ', ' ?')
 
 name = re.compile(r'\b(?!Best)(?:[A-Z](?:[a-z]+|[.A-Z] ?){1,3} )[A-Z][a-z][A-Z]?[a-z]*')
-subjunctive = re.compile(r'\bhop[ei]|\bwish|\bwant|\bshould', re.I)
+subjunctive = re.compile(r'\bhop[ei]|\bwish|\bwant|\bshould|\bthink', re.I)
 congrat = re.compile(r'congrats|congratulations', re.I)
 hashtag = re.compile(r'#((?:[A-Z][a-z]+)+)')
 

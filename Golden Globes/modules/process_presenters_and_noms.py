@@ -20,6 +20,9 @@ def run(db, target, event):
                 current_dict = nominee_names
                 start = time
                 end = time + 360000
+            if target.timestamp_format == 'str':
+                start = str(start)
+                end = str(end)
             cursor = db.collection.find({'timestamp_ms': {'$gt': start, '$lt': end}})
             for tweet in cursor:
                 if i == 1 and not regex.eehhhh.match(tweet['text']):

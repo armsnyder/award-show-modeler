@@ -1,14 +1,36 @@
-# NLP
-## Golden Globes
-Golden Globes Natural Language Processor  
-by Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder  
-Northwestern University  
-EECS 337  
-Professor Lawrence Birnbaum  
-11 February 2015
+# Golden Globes
+## Discovers and Models information about an awards ceremony by processing tweets
+Authors: Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder
+Northwestern University
+EECS 337
+Professor Lawrence Birnbaum
 
-The main executable file is goldenglobes.py, which will take some command line arguments, one of which will certainly be
-the JSON file containing the raw twitter data. This file should only contain the main function with as little code as
-possible. We're going to want to abstract our various methods and classes to modules, which we'll keep tucked away in
-the modules folder. This way when one of us wants to edit something, the chances of conflicts when it comes time to
-merge is much lower.
+### Overview
+The main executable file is goldenglobes.py. In separate threads, it calls other modules with specific detection goals.
+
+#### Optional Arguments
+- **-h**, --help: Show this help message and exit
+- **-v**, --verbose: Show additional system messages
+- **-d**, --DATABASE: Mongo database where tweets live
+- **-c**, --COLLECTION: Specify which Mongo collection to load
+- **-t** --TWITTER_JSON: JSON file holding tweet objects; if specified, will attempt to load the JSON objects therein contained into a collection by the same name
+- **-f**, --force_reload: Force reloading tweets JSON into mongoDB
+- **-a**, --twitter_handles: Match twitter handles to names (requires Internet connection, takes longer)
+- **-o**, --OUTPUT: FIle path destination for output JSON file for the autograder
+- **-g**, --run_autograder: Automatically launch the autograder when finished
+
+#### Libraries Used
+In addition to the standard Python libraries, several external modules were used to improve performance.
+##### pymongo
+Interface for MongoDB used to load corpora to a database for efficiency
+#####nltk
+Natural Language Toolkit used for tokenizing natural lanuage with n-grams and resolving typos with edit distance metric
+#####re
+Built-in module used for regular expression matching
+#####twitter
+Interface for Twitter API used to resolve twitter handles to natural language
+#####tkinter
+Interface library used for building a GUI
+
+### Adaptability
+The only natural language assumption made by the system is that every award conferred during the award ceremony over which the system is operating begins with the word "best." As a result, the system is immediately adaptable and can be expected to perform reasonably well on any such ceremony (e.g. the Academy Awards).
