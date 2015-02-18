@@ -29,14 +29,12 @@ def run(db, target, event, event_wait, limit=None):
         if not from_zone:
             continue
         hour = int(match.group(1))
-        if match.group(2) == 'pm':
+        if match.group(2).lower() == 'pm':
             hour += 12
-        tweet_time = util.timestamp_to_datetime(int(tweet['timestamp_ms']))\
-            .replace(tzinfo=utc_zone).astimezone(from_zone)
+        tweet_time = util.timestamp_to_datetime(tweet['timestamp_ms']).astimezone(from_zone)
         res_time = datetime.datetime(tweet_time.year, tweet_time.month, tweet_time.day, hour, tzinfo=from_zone)\
             .astimezone(utc_zone)
         res_timestamp = calendar.timegm(res_time.utctimetuple()) * 1000
-        print res_timestamp / 1000
         if res_timestamp in result:
             result[res_timestamp] += 1
         else:
@@ -44,6 +42,7 @@ def run(db, target, event, event_wait, limit=None):
         i += 1
     if result:
         target.start_time = sorted(result, key=result.get, reverse=True)[0]
+        print 'final', target.start_time
     else:
         util.warning('Failed to determine event start time')
         target.start_time = backup_time

@@ -5,6 +5,7 @@ import nltk
 import os
 import re
 import datetime
+from dateutil.tz import *
 
 # -- FIELDS -- #
 
@@ -16,7 +17,7 @@ default_database = 'gg'  # default MongoDB database (Miriam's is gg)
 default_output = '$r/output'  # default output JSON destination
 output_path = None
 script_path = None
-host_threshold = 0.92
+host_threshold = 0.85
 winner_threshold = 0.545
 award_name_threshold = 0.25
 award_time_percentile = 0.1
@@ -70,7 +71,12 @@ def get_path(path):
 
 
 def timestamp_to_datetime(timestamp):
-    return datetime.datetime.fromtimestamp(timestamp / 1e3)
+    return datetime.datetime.fromtimestamp(timestamp / 1e3, tz=gettz('UTC'))
+
+
+def timestamp_to_string(timestamp, format_str):
+    date = timestamp_to_datetime(timestamp).astimezone(tzlocal())
+    return date.strftime(format_str)
 
 
 def camel_to_space(hashtag):
