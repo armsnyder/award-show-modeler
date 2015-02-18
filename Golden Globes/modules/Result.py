@@ -7,6 +7,7 @@ import datetime
 import json
 import os
 import util
+import itertools
 
 import regex
 
@@ -17,8 +18,10 @@ class Result:
         self.start_time = None
         self.hosts = []
         self.winners = []
-        self.presenters = {}
-        self.nominees = {}
+        self.presenters = []
+        self.nominees = []
+        self.best_dressed = []
+        self.worst_dressed = []
         self.autograder_result = {}
 
     def print_results(self):
@@ -26,31 +29,44 @@ class Result:
         print '*************************'
         print '||       RESULTS       ||'
         print '*************************'
-        print self.hosts_string()
+        print self.get_name_list(self.hosts, 'Hosts')
         print ''
         print self.display_winners()
         print ''
+        print self.get_name_list(self.best_dressed, 'Best Dressed')
+        print ''
+        print self.get_name_list(self.worst_dressed, 'Worst Dressed')
+        print ''
         return
 
-    def hosts_string(self):
-        host_string = 'Hosts: '
-        number_of_hosts = len(self.hosts)
-        for i in range(number_of_hosts):
-            host_string += self.hosts[i]
-            if i == number_of_hosts-2:
-                host_string += ' and '
-            elif i == number_of_hosts-1:
-                host_string += '!'
-            else:
-                host_string == ', '
-        return host_string
+    @staticmethod
+    def join_name(name):
+        return name[0] + ' ' + name[1]
 
     def display_winners(self):
-        """Not neally done....."""
         f = ''
         for winner, award, time in self.winners:
-            f += winner + ': ' + award + ' at ' + time.strftime("%H:%M:%S") + '\n'
+            f += winner + ': ' + award + ' at ' + datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S") + '\n'
         return f
+
+    @staticmethod
+    def get_name_list(name_list, title=None):
+        result = ''
+        if title:
+            result += title + ': '
+        number_of_names = len(name_list)
+        for i in range(number_of_names):
+            if type(name_list[i]) is tuple:
+                result += Result.join_name(name_list[i])
+            else:
+                result += name_list[i]
+            if i == number_of_names-2:
+                result += ' and '
+            elif i == number_of_names-1:
+                result += '.'
+            else:
+                result += ', '
+        return result
 
     def print_output_file(self):
         output_dir = util.get_path(util.output_path)
@@ -78,26 +94,63 @@ class Result:
     def compile_autograder_result(self):
         self.autograder_result = {
             'metadata': {
-                'year': self.start_time.strftime("%Y"),
-                'hosts': {
-                    'method': 'detected',
-                    'method_description': 'The tweets are filtered first by the regex \'hosts\' and second \n'
-                                          'by a regex we wrote to extract names. These names are placed into \n'
-                                          'a dictionary, which maintains the popularity of each name. The \n'
-                                          'names are sorted by popularity, and the ones that are most often \n'
-                                          'mentioned are returned.'
+                'year': datetime.datetime.fromtimestamp(self.start_time).strftime("%Y"),
+                'names': {
+                    'hosts': {
+                        'method': 'detected',
+                        'method_description': 'The tweets are filtered first by the regex \'host\' and second by \n'
+                                              'a regex we wrote to extract names. These names are placed into a \n'
+                                              'dictionary, which maintains the popularity of each name. The \n'
+                                              'names are sorted by popularity, and the ones that are most often \n'
+                                              'mentioned are returned.'
+                    },
+                    'nominees': {
+                        'method': 'detected',
+                        'method_description': 'For every award, an estimated time of conferral is used as an \n'
+                                              'anchor time to collect a cursor of tweets which are matched first \n'
+                                              'to the regex \'nominees\' and \n then to the regex for names to \n'
+                                              'extract probable nominees. The most popular names that are not \n'
+                                              'hosts or winners are selected.'
+                    },
+                    'awards': {
+                        'method': 'detected',
+                        'method_description': 'The awards are detected in conjunction with the winners. First, \n'
+                                              'the tweets are filtered by a regex that checks if the tweet \n'
+                                              'contains a form of the word \'win\' and \'best\'. These tweets \n'
+                                              'are further filtered by removing those using subjunctive tense \n'
+                                              'or occurring before the ceremony\'s start time, which is also \n'
+                                              'detected. The remaining tweets are matched against several \n'
+                                              'language models that attempt to pull out winner and award names. \n'
+                                              'The awards are grouped by winner (as the dictionary key), which \n'
+                                              'goes through a couple consolidation steps. The top winners are \n'
+                                              'extracted, and the most popular award name per winner bin is \n'
+                                              'added to the award list.'
+                    },
+                    'presenters': {
+                        'method': 'detected',
+                        'method_description': 'Detected at the same time as nominees, the regex generator for time \n'
+                                              'ranges is used to match a cursor of tweets from just before a \n'
+                                              'certain award is conferred. Those tweets are matched with the regex \n'
+                                              'for names, and the most popular names who are not winners are returned.'
+                    }
                 },
-                'nominees': {
-                    'method': 'detected',
-                    'method_description': ''
-                },
-                'awards': {
-                    'method': 'detected',
-                    'method_description': ''
-                },
-                'presenters': {
-                    'method': 'detected',
-                    'method_description': ''
+                'mappings': {
+                    'nominees': {
+                        'method': 'detected',
+                        'method_description': 'Both nominees and presenters are mapped to their awards by \n'
+                                              'maintaining the timestamps on tweets throughout the program. \n'
+                                              'We are thus able to detect when an award was given. These times \n'
+                                              'are passed into a function that procedurally generates regular \n'
+                                              'expressions that match tweets that were tweeted around a certain \n'
+                                              'time. We look at a window of 6 minutes after a winner is \n'
+                                              'announced for the nominees and map the results to the winner\'s \n'
+                                              'award.'
+                    },
+                    'presenters': {
+                        'method': 'detected',
+                        'method_description': 'Same as nominees, but with a window of 3 minutes before an award \n'
+                                              'is announced.'
+                    }
                 }
             },
             'data': {
@@ -105,17 +158,17 @@ class Result:
                     'hosts': self.hosts,
                     'winners': [winner for winner, award, time in self.winners],
                     'awards': [award for winner, award, time in self.winners],
-                    'presenters': [],
-                    'nominees': []
+                    'presenters': list(itertools.chain.from_iterable(self.presenters)),
+                    'nominees': list(itertools.chain.from_iterable(self.nominees))
                 },
                 'structured': {}
             }
         }
 
         # Structured
-        for winner, award, time in self.winners:
-            self.autograder_result['data']['structured'][award] = {
-                'nominees': [],
-                'winner': winner,
-                'presenters': []
+        for i in range(len(self.winners)):
+            self.autograder_result['data']['structured'][self.winners[i][1]] = {
+                'nominees': list(self.nominees[i]),
+                'winner': self.winners[i][0],
+                'presenters': list(self.presenters[i])
             }

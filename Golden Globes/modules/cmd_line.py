@@ -23,13 +23,13 @@ group.add_argument('-t', '--twitter_json', dest='collection', metavar='TWITTER_J
 parser.add_argument('-f', '--force_reload', action='store_true',
                     help='Force reloading tweets JSON into mongoDB')
 
-group.add_argument('-e', '--event_name', default=util.event_name,
+parser.add_argument('-e', '--event_name', default=util.event_name,
                    help='Specify name of the award show to process')
 
 parser.add_argument('-a', '--twitter_handles', action='store_true',
                     help='Match twitter handles to names (requires Internet connection, takes longer)')
 
-group.add_argument('-o', '--output',  default=util.default_output,
+parser.add_argument('-o', '--output',  default=util.default_output,
                    help='File path destination for output JSON file for the auto-grader')
 
 parser.add_argument('-g', '--run_autograder', action='store_true',

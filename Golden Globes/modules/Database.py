@@ -23,7 +23,7 @@ class Database:
         self.collection_name = self.format_collection_name(collection)
         self.json_name = self.format_json_name(collection)
         self.connect()
-        self.access(self.collection_name)
+        self.access(db)
         self.load_collection(force_reload)
         return
 
