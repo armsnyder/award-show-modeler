@@ -1,5 +1,5 @@
 # Golden Globes
-## Discovers and Models information about an awards ceremony by processing tweets
+## Discovers and models information about an awards ceremony by processing tweets
 Authors: Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder
 Northwestern University
 EECS 337
