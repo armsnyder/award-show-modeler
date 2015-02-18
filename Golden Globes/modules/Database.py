@@ -1,6 +1,4 @@
 # Database object, used for managing connections, loading tweets
-# Don't worry too much about understanding this one. Just look at how the Database object is interfaced with in the
-# already-written modules, often referred to as 'db'
 
 import pymongo
 import os
@@ -50,6 +48,7 @@ class Database:
         return
 
     def load_collection(self, force_reload):
+        """makes a collection selection"""
         if self.collection_name not in self.db.collection_names():
             self.write_tweets()
         else:
@@ -83,8 +82,7 @@ class Database:
 
     @staticmethod
     def load_tweet_json(tweet):
-        """returns important fields from tweet object
-        once we get further we may specify only specific fields to load"""
+        """returns important fields from tweet object"""
         return tweet
 
     @staticmethod

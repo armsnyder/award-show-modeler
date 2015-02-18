@@ -14,8 +14,8 @@ import regex
 
 class Result:
     def __init__(self):
-        self.show_name = 'Golden Globes'
-        self.start_time = None
+        self.event_name = ''
+        self.start_time = 0
         self.hosts = []
         self.winners = []
         self.presenters = []
@@ -29,6 +29,12 @@ class Result:
         print '*************************'
         print '||       RESULTS       ||'
         print '*************************'
+        print 'Note - Everything listed is detected without any hard-coding or web scraping'
+        print ''
+        print 'Event:', self.event_name
+        print 'Date:', util.timestamp_to_string(self.start_time, '%x')
+        print 'Start time:', util.timestamp_to_string(self.start_time, '%I:%M %Z')
+        print ''
         print self.get_name_list(self.hosts, 'Hosts')
         print ''
         print self.display_winners()
@@ -46,7 +52,7 @@ class Result:
     def display_winners(self):
         f = ''
         for winner, award, time in self.winners:
-            f += winner + ': ' + award + ' at ' + datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S") + '\n'
+            f += winner + ': ' + award + ' at ' + util.timestamp_to_string(time, '%H:%M:%S') + '\n'
         return f
 
     @staticmethod
@@ -94,7 +100,7 @@ class Result:
     def compile_autograder_result(self):
         self.autograder_result = {
             'metadata': {
-                'year': datetime.datetime.fromtimestamp(self.start_time).strftime("%Y"),
+                'year': util.timestamp_to_string(self.start_time, '%Y'),
                 'names': {
                     'hosts': {
                         'method': 'detected',

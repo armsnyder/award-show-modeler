@@ -1,5 +1,4 @@
 # Code for interfacing with command line arguments passed to our program
-# Don't worry about understanding this.
 
 import argparse
 import util
@@ -23,9 +22,6 @@ group.add_argument('-t', '--twitter_json', dest='collection', metavar='TWITTER_J
 parser.add_argument('-f', '--force_reload', action='store_true',
                     help='Force reloading tweets JSON into mongoDB')
 
-parser.add_argument('-e', '--event_name', default=util.event_name,
-                   help='Specify name of the award show to process')
-
 parser.add_argument('-a', '--twitter_handles', action='store_true',
                     help='Match twitter handles to names (requires Internet connection, takes longer)')
 
@@ -42,4 +38,3 @@ if args.verbose:
 if args.twitter_handles:
     util.search_twitter_handles = True
 util.output_path = args.output
-util.event_name = args.event_name
