@@ -56,14 +56,20 @@ def gui_run(target):
     # m2.add(bottom)
 
     #top buttons
-    runButton = Button(top, text="RUN", fg="red", height=12, width=20, command=lambda: button_pressed(root))
+    runButton = Button(top, text="RUN", fg="red", height=12, width=20, command=lambda: button_pressed(root, database, col))
     runButton.pack(side=BOTTOM)
 
-    html_label = Checkbutton(top, text="HTML Results Display", command=html_status)
+    html_label = Checkbutton(top, text="Print fancy HTML results page", command=html_status)
     html_label.pack(side=BOTTOM)
 
-    # event_input = event_entry = Entry(top, text="Event:")
-    # event_entry.pack(side=BOTTOM)
+    col = Entry(top, text="MongoDB collection OR tweet JSON file path:")
+    col.pack(side=BOTTOM)
+    Label(top, text="MongoDB collection OR tweet JSON file path:").pack(side=BOTTOM)
+
+    database = Entry(top, text="MongoDB database:")
+    database.pack(side=BOTTOM)
+    Label(top, text="MongoDB database:").pack(side=BOTTOM)
+
 
     # event_label = Checkbutton(top, text="Event Name", justify=LEFT)
     # event_label.pack(side=BOTTOM)
@@ -80,41 +86,32 @@ def gui_run(target):
     verbose = Checkbutton(top, text="Verbose Mode", justify=LEFT, command=run_verbose)
     verbose.pack(side=BOTTOM,)
 
-    options_label = Label(top, text="OPTIONS", width=40, bd=20)
-    options_label.pack(side=BOTTOM)
-
     # head_label = Label(top, text="TEAM 1 GUI", width=40, bd=20)
     # head_label.pack(side=BOTTOM)
 
     top.mainloop()
 
 
-def button_pressed(window):
+def button_pressed(window, database, col):
     # print "RUN"
+    cmd_line.args.database = database
+    cmd_line.args.collection = col
     window.destroy();
     return
 
-def autograder_status():
-    cmd_line.args.run_autograder = True
-    return
 
 def html_status():
     util.html_display=True
     return
 
+
 def run_verbose():
     util.verbose=True
-    print "verbose"
-    return
-
-def json_status():
-    cmd_line.args.force_reload = True
     return
 
 
 def search_handles():
     util.search_twitter_handles = True
-    print "handles"
     return
 
 
