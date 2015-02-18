@@ -76,7 +76,7 @@ def html_done(html):
     filename = util.get_path('$r/output/result.html')
     with open(filename, 'w') as html_file:
         html_file.write(html.encode('utf8'))
-    webbrowser.open_new(filename)
+    webbrowser.open_new('file://' + filename)
 
 
 def find_image(name):
