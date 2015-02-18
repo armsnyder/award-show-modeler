@@ -1,6 +1,9 @@
 # Golden Globes
 ## Discovers and models information about an awards ceremony by processing tweets
-Authors: Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder  Northwestern University  EECS 337  Professor Lawrence Birnbaum
+Authors: Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder  
+Northwestern University  
+EECS 337  
+Professor Lawrence Birnbaum
 
 ### Overview
 The main executable file is goldenglobes.py. In separate threads, it calls other modules with specific detection goals.
