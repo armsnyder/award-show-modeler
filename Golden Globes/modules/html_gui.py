@@ -8,7 +8,7 @@ import util
 
 def run(target):
     """Creates and outputs an html formatted results document"""
-
+    print 'Opening Results web page. Wait a moment...'
     html = ''
     html += html_hosts(target)
     html += html_image_add(find_image(target.get_name_list(target.hosts)+str(target.event_name)))
