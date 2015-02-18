@@ -63,7 +63,7 @@ def html_text_heading(text):
 def html_image_add(url):
     if not url:
         return
-    return '<img src=' + url + ' style="width:128px;height:128px"></img>'
+    return '<img src=' + url + ' style="height:128px"></img>'
 
 
 def html_cleanup(html):
