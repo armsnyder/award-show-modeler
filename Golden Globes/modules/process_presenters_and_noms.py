@@ -46,13 +46,16 @@ def run(db, target, event):
             pl.remove(winner)
         if winner in nl:
             nl.remove(winner)
-
+        for nom in nl:
+            for noom in nl:
+                if 0 < nltk.metrics.edit_distance(nom, noom) < 4:
+                    nl.remove(noom)
         if len(pl):
             pl_trunc = []
             for i in range(len(pl)):
                 if i > 1:
                     break
-            pl_trunc.append(pl[i][0])
+                pl_trunc.append(pl[i][0])
             target.presenters.append(tuple(pl_trunc))
         else:
             target.presenters.append(())
@@ -60,7 +63,7 @@ def run(db, target, event):
         if len(nl):
             nl_trunc = []
             for j in range(len(nl)):
-                if i > 3:
+                if j > 3:
                     break
                 nl_trunc.append(pl[j][0])
             target.nominees.append(tuple(nl_trunc))
