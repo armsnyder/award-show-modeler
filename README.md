@@ -13,6 +13,7 @@ The program can be run from the command line as ```goldenglobes.py``` taking any
 ```
 python goldenglobes.py -d gg -c gg2013
 ```
+The program will format the results to a new file called ```result.html``` that can be viewed in any web browser.
 
 #### Optional Arguments
 - **-h**, --help: Show this help message and exit
@@ -35,6 +36,8 @@ Natural Language Toolkit used for tokenizing natural lanuage with n-grams and re
 Built-in module used for regular expression matching
 #####twitter
 Interface for Twitter API used to resolve twitter handles to natural language
+####tkinter
+Interface library used for building GUI
 
 ### Adaptability
 The only natural language assumption made by the system is that the name of a given award conferred during the award ceremony over which the system is operating begins with the word "best." As a result, the system is immediately adaptable and can be expected to perform reasonably well on any such ceremony (e.g. the Academy Awards).
