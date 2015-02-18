@@ -20,6 +20,7 @@ import modules.process_winners as process_winners
 import modules.process_presenters_and_noms as process_presenters_and_noms
 import modules.process_best_dressed as process_best_dressed
 import modules.process_worst_dressed as process_worst_dressed
+import modules.process_event_name as process_event_name
 from modules.Result import Result
 from modules.Database import Database
 from modules.util import vprint
@@ -51,28 +52,31 @@ def main():
 
 
 def process_tweets(db, result):
-    """Calls helper (multithreaded) functions to process tweets as they arrive"""
+    """Calls helper (multithreaded) functions to process tweets"""
 
     # Define events that allow threads to communicate and wait for one another:
-    event_names = ['start_time_set', 'winners_found']
+    event_names = ['start_time_set', 'winners_found', 'event_name_found']
 
     events = {}
     for event_name in event_names:
         events[event_name] = threading.Event()
 
     # To add new processes, start new threads like so:
+    threading.Thread(name='Process Event Name',
+                     target=process_event_name.run,
+                     args=(db, result, events['event_name_found'], util.limit)).start()
     threading.Thread(name='Process Hosts',
                      target=process_hosts.run,
                      args=(db, result)).start()
     threading.Thread(name='Best Dressed',
                      target=process_best_dressed.run,
-                     args=(db, result)).start()
+                     args=(db, result, events['event_name_found'])).start()
     threading.Thread(name='Worst Dressed',
                      target=process_worst_dressed.run,
-                     args=(db, result)).start()
+                     args=(db, result, events['event_name_found'])).start()
     threading.Thread(name='Process Start Time',
                      target=process_start_time.run,
-                     args=(db, result, events['start_time_set'])).start()
+                     args=(db, result, events['start_time_set'], events['event_name_found'], util.limit)).start()
     threading.Thread(name='Process Winners',
                      target=process_winners.run,
                      args=(db, result, events['start_time_set'], events['winners_found'])).start()
@@ -95,5 +99,4 @@ def process_tweets(db, result):
 
 
 if __name__ == '__main__':
-    util.script_path = os.path.dirname(os.path.realpath(__file__))
     main()

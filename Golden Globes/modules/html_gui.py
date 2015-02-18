@@ -1,3 +1,4 @@
+# Formats our results as html and makes a pretty result document
 
 import webbrowser
 import urllib2
@@ -73,7 +74,7 @@ def html_cleanup(html):
 
 
 def html_done(html):
-    filename = util.get_path('$r/output/result.html')
+    filename = util.get_path(util.default_output + '/result.html')
     with open(filename, 'w') as html_file:
         html_file.write(html.encode('utf8'))
     webbrowser.open_new('file://' + filename)

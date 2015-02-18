@@ -1,5 +1,5 @@
 # Processes tweets to find the host names.
-# This is achieved by first getting all tweets containing 'host' and then checking for capitalized bigrams within those
+# This is achieved by first getting all tweets containing 'host' and then checking for names within those
 # tweets. Finally, the results are filtered by popularity to discern which are likely to be names of hosts.
 
 from __future__ import division
@@ -24,7 +24,7 @@ def run(db, target, limit=None):
                 result[name] = 1
         i += 1
 
-    # This part ensured only the most popular hits are returned
+    # This part ensures only the most popular hits are returned
     most_popular = None
     for name, popularity in sorted(result.items(), key=operator.itemgetter(1), reverse=True):
         if not most_popular:
