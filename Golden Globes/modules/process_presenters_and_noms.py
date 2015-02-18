@@ -20,7 +20,7 @@ def run(db, target, event):
                 current_dict = nominee_names
                 start = time
                 end = time + 360000
-            cursor = db.collection.find({'timestamp_ms': {'$gt': start, '$lt': end}})
+            cursor = db.collection.find({'timestamp_ms': {'$gt': str(start), '$lt': str(end)}})
             for tweet in cursor:
                 if i == 1 and not regex.eehhhh.match(tweet['text']):
                     continue

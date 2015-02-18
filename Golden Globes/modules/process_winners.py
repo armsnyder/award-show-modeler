@@ -130,13 +130,11 @@ def split_hashtag(hashtag):
 
 
 def read_winners(db, target):
-    cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False}})
-    # 'timestamp_ms': {'$gt': target.start_time}
+    t = target.start_time
+    cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False},
+                                 'timestamp_ms': {'$gt': str(t)}})
     winner_bins = {}
     for tweet in cursor:
-        if not winner_bins:
-            print target.start_time
-            print tweet['timestamp_ms']
         tweet_time = int(tweet['timestamp_ms'])
         if regex.subjunctive.search(tweet['text']):
             continue
