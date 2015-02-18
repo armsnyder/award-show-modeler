@@ -1,19 +1,14 @@
 # Processes tweets to find the winners
-# TODO: Write a function that takes our bins and collapses them by looking up twitter handles, hashtags, etc
-# TODO: Write a function that tales the collapsed bins and uses statistical analysis to find the real winners
-    # TODO: (possibly using hamming distance)
-
 
 import datetime
-from dateutil import tz
 import twitter
 import nltk
 import math
-from operator import itemgetter
 
 import regex
 from util import vprint
 import util
+import twitter_app
 
 
 def run(db, target, event, event2):
@@ -114,7 +109,7 @@ def handle_lookup(winner_name):
     match = regex.twitter_handel.search(winner_name)
     if match:
         try:
-            result = util.twitter_api.users.show(screen_name=match.group(1))['name']
+            result = twitter_app.twitter_api.users.show(screen_name=match.group(1))['name']
         except twitter.api.TwitterHTTPError:
             pass
     return result
@@ -135,11 +130,12 @@ def split_hashtag(hashtag):
 
 
 def read_winners(db, target):
-    cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False}})
+    cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False},
+                                 'timestamp_ms': {'$gt': str(target.start_time)}})
     winner_bins = {}
     for tweet in cursor:
-        tweet_time = int(tweet['timestamp_ms']) / 1e3
-        if weed_out(tweet, target, tweet_time):
+        tweet_time = int(tweet['timestamp_ms'])
+        if regex.subjunctive.search(tweet['text']):
             continue
         parsed_tweet = None
         model_num = 0
@@ -160,16 +156,6 @@ def read_winners(db, target):
     return winner_bins
 
 
-def weed_out(tweet, target, tweet_time):
-    # Check for subjunctive
-    if regex.subjunctive.search(tweet['text']):
-        return True
-    # Check if tweet occurs before event starts
-    if tweet_time < target.start_time:
-        return True
-    return False
-
-
 def match_to_awards(winners):
     result = []
     for winner, value in winners:
@@ -178,7 +164,7 @@ def match_to_awards(winners):
         for award, time in value:
             award_list.append(award)
             time_list.append(time)
-        award_result = max(set(award_list), key=award_list.count) # select_best(award_list)
+        award_result = max(set(award_list), key=award_list.count)  # select_best(award_list)
         time_list = sorted(time_list)
         time_result = time_list[int(math.floor(len(time_list)*util.award_time_percentile))]
         result.append((winner, award_result, time_result))

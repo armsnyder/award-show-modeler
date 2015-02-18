@@ -4,14 +4,12 @@ from __future__ import division
 import operator
 import nltk
 
-
 import regex
-from util import vprint
 import util
 
 
-def run(db, target):
-    vprint('Processing Best Dressed...')
+def run(db, target, event):
+    event.wait()
     best = {}
     tweets = db.collection.find({'text': regex.best_dressed})
     for tweet in tweets:
@@ -19,7 +17,7 @@ def run(db, target):
         tokens = nltk.word_tokenize(text)
         bg = nltk.bigrams(tokens)
         for name in bg:
-            if name[0] in util.bad_names or name[1] in util.bad_names:
+            if name[0].lower() in util.common_words or name[1].lower() in util.common_words:
                 continue
             if name[0][0].isupper() and name[1][0].isupper():
                 if name in best:
