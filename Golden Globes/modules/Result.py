@@ -56,7 +56,7 @@ class Result:
             result += title + ': '
         number_of_names = len(name_list)
         for i in range(number_of_names):
-            if type(name_list[i]) == 'tuple':
+            if type(name_list[i]) is tuple:
                 result += Result.join_name(name_list[i])
             else:
                 result += name_list[i]
