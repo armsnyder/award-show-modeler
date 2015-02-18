@@ -1,22 +1,18 @@
 # Processes tweets to find the winners
-# TODO: Write a function that takes our bins and collapses them by looking up twitter handles, hashtags, etc
-# TODO: Write a function that tales the collapsed bins and uses statistical analysis to find the real winners
-    # TODO: (possibly using hamming distance)
-
 
 import datetime
-from dateutil import tz
 import twitter
 import nltk
 import math
-from operator import itemgetter
 
 import regex
 from util import vprint
 import util
+import twitter_app
 
 
 def run(db, target, event, event2):
+    """Determines winners, awards, and creates ceremony time line"""
     event.wait()  # Wait for start_time to be set
     vprint('Received start time. Finding winners...')
     raw_winners = read_winners(db, target)
@@ -37,6 +33,10 @@ def sort_winners(key):
 
 
 def consolidate_winners(winner_bins):
+    """Takes in raw winner:[awards] data and processes it by
+        1. Resolving twitter handles to real names
+        2. Resolving hashtags to real names
+        3. Removing winners using a stop list"""
     winners = {}
     for winner_name, awards in winner_bins.items():
         if winner_name:
@@ -64,6 +64,7 @@ def consolidate_winners(winner_bins):
 
 
 def get_top_winners(winner_bins):
+    """Given a dictionary of winners, strips away any that are not mentioned under a set threshold"""
     total = 0
     so_far = 0
     result = []
@@ -79,6 +80,7 @@ def get_top_winners(winner_bins):
 
 
 def super_consolidate(winner_bins):
+    """Takes a dictionary of top winners and attempts to merge similar winner names"""
     result = {}
     # ref_dict = {name: None for name, value in winner_bins}
     ref_dict = {}
@@ -110,17 +112,19 @@ def super_consolidate(winner_bins):
 
 
 def handle_lookup(winner_name):
+    """Translates a handle into a name"""
     result = winner_name
     match = regex.twitter_handel.search(winner_name)
     if match:
         try:
-            result = util.twitter_api.users.show(screen_name=match.group(1))['name']
+            result = twitter_app.twitter_api.users.show(screen_name=match.group(1))['name']
         except twitter.api.TwitterHTTPError:
             pass
     return result
 
 
 def split_hashtag(hashtag):
+    """Translates a hashtag into a space-delimited string"""
     result = ''
     for letter in hashtag:
         if letter == '#':
@@ -135,11 +139,17 @@ def split_hashtag(hashtag):
 
 
 def read_winners(db, target):
-    cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False}})
+    """Searches a database for winners, matches against some schema, and returns bins award titles with
+    winner names as keys"""
+    t = target.start_time
+    if target.timestamp_format == 'str':
+        t = str(t)
+    cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False},
+                                 'timestamp_ms': {'$gt': t}})
     winner_bins = {}
     for tweet in cursor:
-        tweet_time = int(tweet['timestamp_ms']) / 1e3
-        if weed_out(tweet, target, tweet_time):
+        tweet_time = int(tweet['timestamp_ms'])
+        if regex.subjunctive.search(tweet['text']):
             continue
         parsed_tweet = None
         model_num = 0
@@ -160,17 +170,8 @@ def read_winners(db, target):
     return winner_bins
 
 
-def weed_out(tweet, target, tweet_time):
-    # Check for subjunctive
-    if regex.subjunctive.search(tweet['text']):
-        return True
-    # Check if tweet occurs before event starts
-    if tweet_time < target.start_time:
-        return True
-    return False
-
-
 def match_to_awards(winners):
+    """Takes a winner:[awards] dictionary and returns a list of (winner, award_title, time) tuples"""
     result = []
     for winner, value in winners:
         award_list = []
@@ -178,7 +179,7 @@ def match_to_awards(winners):
         for award, time in value:
             award_list.append(award)
             time_list.append(time)
-        award_result = max(set(award_list), key=award_list.count) # select_best(award_list)
+        award_result = max(set(award_list), key=award_list.count)  # select_best(award_list)
         time_list = sorted(time_list)
         time_result = time_list[int(math.floor(len(time_list)*util.award_time_percentile))]
         result.append((winner, award_result, time_result))
