@@ -1,9 +1,8 @@
-# Formats our results as html and makes a pretty result document
 
 import webbrowser
 import urllib2
 import json
-
+import Result
 import util
 
 
@@ -12,69 +11,69 @@ def run(target):
 
     html = ''
     html += html_hosts(target)
-    html += html_image_add(find_image(target.get_name_list(target.hosts)))
+    html += html_image_add(find_image(target.get_name_list(target.hosts)+str(target.event_name)))
 
     for winner, award, time in target.winners:
         html += html_text_add(award)
         html += html_text_winner(winner)
-        html += html_image_add(find_image(winner))
+        html += html_image_add(find_image(winner + str(target.event_name)))
         html += html_text_time(util.timestamp_to_datetime(time).strftime("%H:%M:%S"))
 
     html += html_text_heading('Best Dressed:')
     for name in target.best_dressed:
         full_name = target.join_name(name)
-        html += html_text_add(full_name)
-        html += html_image_add(find_image(full_name))
+        html += html_text_winner(full_name)
+        html += html_image_add(find_image(full_name+str(target.event_name)))
 
     html += html_text_heading('Worst Dressed:')
     for name in target.worst_dressed:
         full_name = target.join_name(name)
-        html += html_text_add(full_name)
-        html += html_image_add(find_image(full_name))
+        html += html_text_winner(full_name)
+        html += html_image_add(find_image(full_name+str(target.event_name)))
 
     html = html_cleanup(html)
     html_done(html)
 
 
 def html_text_add(text):
-    return "<p><b>"+text+"</b></p>"
+    return "<p><h2 align='center'><b>"+text+"</b></h2></p>"
 
 
 def html_text_time(text):
-    return "<p><i>"+text+"</i></p>"
+    return "<p align='center'><i>"+text+"</i></p>"
 
 
 def html_text_winner(text):
-    return "<p>"+text+"</p>"
+    return "<p align='center'>"+text+"</p>"
 
 
 def html_hosts(target):
-    result = '<p><h1>The Host'
+    result = '<p align="center"><h1 align="center">The Host'
     if len(target.hosts) > 1:
         result += 's'
     result += ':</h1></p>'
-    result += "<p>"+target.get_name_list(target.hosts)+"</p>"
+    result += "<p align='center'>"+target.get_name_list(target.hosts)+"</p>"
     return result
 
 
 def html_text_heading(text):
-    return "<p><b>"+text+"</b></p>"
+    return "<p><h2 align='center'><b>"+text+"</b></h2></p>"
 
 
 def html_image_add(url):
     if not url:
         return
-    return '<img src=' + url + ' style="height:128px"></img>'
+    return '<p align="center"><img src=' + url + ' style="width:256px"></img></p>'
 
 
 def html_cleanup(html):
-    head = "<!DOCTYPE HTML><html><h1>Team 1 Results</h1>"
+    head = "<!DOCTYPE HTML><html><h1 align='center'>Team 1 Results</h1>"
     tail = "</html>"
     return head + html + tail
 
 
 def html_done(html):
-    filename = util.get_path(util.default_output + '/result.html')
+    filename = util.get_path('$r/output/result.html')
     with open(filename, 'w') as html_file:
         html_file.write(html.encode('utf8'))
     webbrowser.open_new('file://' + filename)

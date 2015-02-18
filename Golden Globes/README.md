@@ -29,7 +29,10 @@ twitter
     Useful Python library for consolidating twitter handles to actual people names (use cmd_line options)
 TKInter
 	Interface building library for Python. Allows for GUI interface building.
-
+SimpleJSON
+    JSON parser for working with Google Image Search API Requests
+WebBrowser
+    Web browsing
 
 Reference Code:
 Tutorials Point TkInter and general Python tutorials
