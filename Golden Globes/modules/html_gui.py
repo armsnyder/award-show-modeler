@@ -73,7 +73,7 @@ def html_cleanup(html):
 
 
 def html_done(html):
-    filename = util.get_path('$routput/result.html')
+    filename = util.get_path('$r/output/result.html')
     with open(filename, 'w') as html_file:
         html_file.write(html)
     webbrowser.open_new(filename)
