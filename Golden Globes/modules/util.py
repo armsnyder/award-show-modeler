@@ -2,10 +2,10 @@
 
 import sys
 import nltk
-import operator
 import twitter
 import os
 import re
+import datetime
 
 # -- FIELDS -- #
 
@@ -70,6 +70,10 @@ def get_path(path):
     else:
         result = path
     return result
+
+
+def timestamp_to_datetime(timestamp):
+    return datetime.datetime.fromtimestamp(timestamp)
 
 
 # def select_best(list):

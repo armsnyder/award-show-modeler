@@ -4,14 +4,11 @@
 # ambitious.
 
 import datetime
-from GUI import *
 import json
 import os
 import util
 import itertools
 
-import image_search
-import GUI
 import regex
 
 
@@ -32,13 +29,13 @@ class Result:
         print '*************************'
         print '||       RESULTS       ||'
         print '*************************'
-        print self.hosts_string()
+        print self.get_name_list(self.hosts, 'Hosts')
         print ''
         print self.display_winners()
         print ''
-        print self.show_best_dressed()
+        print self.get_name_list(self.best_dressed, 'Best Dressed')
         print ''
-        print self.show_worst_dressed()
+        print self.get_name_list(self.worst_dressed, 'Worst Dressed')
         print ''
         return
 
@@ -46,28 +43,30 @@ class Result:
     def join_name(name):
         return name[0] + ' ' + name[1]
 
-    def hosts_string(self):
-        host_string = 'Hosts: '
-        number_of_hosts = len(self.hosts)
-        for i in range(number_of_hosts):
-            host_string += self.hosts[i]
-            if i == number_of_hosts-2:
-                host_string += ' and '
-            elif i == number_of_hosts-1:
-                host_string += '!'
-            else:
-                host_string == ', '
-
-        GUI.html_hosts(host_string)
-        GUI.html_image_add(host_string)
-        return host_string
-
     def display_winners(self):
-        """Not neally done....."""
         f = ''
         for winner, award, time in self.winners:
             f += winner + ': ' + award + ' at ' + datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S") + '\n'
         return f
+
+    @staticmethod
+    def get_name_list(name_list, title=None):
+        result = ''
+        if title:
+            result += title + ': '
+        number_of_names = len(name_list)
+        for i in range(number_of_names):
+            if type(name_list[i]) == 'tuple':
+                result += Result.join_name(name_list[i])
+            else:
+                result += name_list[i]
+            if i == number_of_names-2:
+                result += ' and '
+            elif i == number_of_names-1:
+                result += '.'
+            else:
+                result += ', '
+        return result
 
     def print_output_file(self):
         output_dir = util.get_path(util.output_path)
@@ -167,55 +166,9 @@ class Result:
         }
 
         # Structured
-        for winner, award, time in self.winners:
-            self.autograder_result['data']['structured'][award] = {
-                'nominees': [],
-                'winner': winner,
-                'presenters': []
-            }
-
-        for winner, award, time in self.winners:
-            GUI.html_text_add(award)
-            GUI.html_text_winner(winner)
-            GUI.html_image_add(image_search.find_image(winner))
-            GUI.html_text_time(datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S"))
-
-        html_done()
         for i in range(len(self.winners)):
             self.autograder_result['data']['structured'][self.winners[i][1]] = {
                 'nominees': list(self.nominees[i]),
                 'winner': self.winners[i][0],
                 'presenters': list(self.presenters[i])
             }
-
-    def show_best_dressed(self):
-        best_string = 'Best Dressed: '
-        GUI.html_text_heading(best_string)
-        number_of_best = len(self.best_dressed)
-        for name in range(number_of_best):
-            # GUI.html_text_add(name)
-            # GUI.html_image_add(name)
-            best_string += self.join_name(self.best_dressed[name])
-            if name == number_of_best-2:
-                best_string += ' and '
-            elif name == number_of_best-1:
-                best_string += '.'
-            else:
-                best_string += ', '
-        return best_string
-
-    def show_worst_dressed(self):
-        worst_string = 'Worst Dressed: '
-        GUI.html_text_heading(worst_string)
-        number_of_worst = len(self.worst_dressed)
-        for name in range(number_of_worst):
-            # GUI.html_text_add(name)
-            # GUI.html_image_add(name)
-            worst_string += self.join_name(self.worst_dressed[name])
-            if name == number_of_worst-2:
-                worst_string += ' and '
-            elif name == number_of_worst-1:
-                worst_string += '.'
-            else:
-                worst_string += ', '
-        return worst_string
