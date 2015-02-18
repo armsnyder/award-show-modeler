@@ -42,7 +42,6 @@ def run(db, target, event, event_wait, limit=None):
         i += 1
     if result:
         target.start_time = sorted(result, key=result.get, reverse=True)[0]
-        print 'final', target.start_time
     else:
         util.warning('Failed to determine event start time')
         target.start_time = backup_time

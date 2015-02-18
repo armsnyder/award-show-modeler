@@ -71,7 +71,7 @@ def get_path(path):
 
 
 def timestamp_to_datetime(timestamp):
-    return datetime.datetime.fromtimestamp(timestamp / 1e3, tz=gettz('UTC'))
+    return datetime.datetime.fromtimestamp(int(timestamp) / 1e3, tz=gettz('UTC'))
 
 
 def timestamp_to_string(timestamp, format_str):
