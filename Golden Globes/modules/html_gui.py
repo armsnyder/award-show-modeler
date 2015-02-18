@@ -23,13 +23,13 @@ def run(target):
     for name in target.best_dressed:
         full_name = target.join_name(name)
         html += html_text_add(full_name)
-        html += html_image_add(full_name)
+        html += html_image_add(find_image(full_name))
 
     html += html_text_heading('Worst Dressed:')
     for name in target.worst_dressed:
         full_name = target.join_name(name)
         html += html_text_add(full_name)
-        html += html_image_add(full_name)
+        html += html_image_add(find_image(full_name))
 
     html = html_cleanup(html)
     html_done(html)
