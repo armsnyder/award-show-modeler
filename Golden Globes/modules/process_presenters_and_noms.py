@@ -46,10 +46,14 @@ def run(db, target, event):
             pl.remove(winner)
         if winner in nl:
             nl.remove(winner)
-        for nom in nl:
-            for noom in nl:
-                if 0 < nltk.metrics.edit_distance(nom, noom) < 4:
-                    nl.remove(noom)
+        # for nom in nl:
+        #     for noom in nl:
+        #         if 0 < nltk.metrics.edit_distance(nom, noom) < 2:
+        #             nl.remove(noom)
+        # for nom in pl:
+        #     for noom in pl:
+        #         if 0 < nltk.metrics.edit_distance(nom, noom) < 2:
+        #             pl.remove(noom)
         if len(pl):
             pl_trunc = []
             for i in range(len(pl)):

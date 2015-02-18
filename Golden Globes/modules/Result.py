@@ -39,7 +39,6 @@ class Result:
         print self.get_name_list(self.hosts, 'Hosts')
         print ''
         self.display_winners()
-        print ''
         print self.get_name_list(self.best_dressed, 'Best Dressed')
         print ''
         print self.get_name_list(self.worst_dressed, 'Worst Dressed')
@@ -52,14 +51,12 @@ class Result:
 
     def display_winners(self):
         print '[AWARDS]'
+        print ''
         for i in range(len(self.winners)):
             print '  Title:', self.winners[i][1]
             print '  Time:', util.timestamp_to_string(self.winners[i][2], '%H:%M:%S')
             if self.presenters[i]:
-                print '  Presenter',
-                if len(self.presenters[i]) > 1:
-                    print 's',
-                print ':', self.get_name_list(self.presenters[i])
+                print '  Presenters:', self.get_name_list(self.presenters[i])
             if self.nominees[i]:
                 print '  Nominees:', self.get_name_list(self.nominees[i])
             print '  Winner:', self.winners[i][0]
@@ -78,10 +75,8 @@ class Result:
                 result += name_list[i]
             if i == number_of_names-2:
                 result += ' and '
-            elif i == number_of_names-1:
-                result += '.'
-            else:
-                result += ', '
+            elif i != number_of_names-1:
+                result += ','
         return result
 
     def print_output_file(self):
