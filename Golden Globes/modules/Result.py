@@ -134,10 +134,7 @@ class Result:
                     },
                     'presenters': {
                         'method': 'detected',
-                        'method_description': 'Detected at the same time as nominees, the regex generator for time \n'
-                                              'ranges is used to match a cursor of tweets from just before a \n'
-                                              'certain award is conferred. Those tweets are matched with the regex \n'
-                                              'for names, and the most popular names who are not winners are returned.'
+                        'method_description': 'Detected at the same time as nominees, using an identical method'
                     }
                 },
                 'mappings': {
