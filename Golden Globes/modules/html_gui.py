@@ -90,7 +90,7 @@ def find_image(name):
     except:
         return None
     # Process the JSON string.
-    google_image = json.loads(response)
+    google_image = json.load(response)
     found_image = google_image['responseData']['results'][0]['url']
     # try:
     #     # im = Image.open(StringIO(urllib2.urlopen(found_image).read()))
