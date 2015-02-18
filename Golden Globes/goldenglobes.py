@@ -27,6 +27,7 @@ from modules.util import vprint
 import autograder.autograder as autograder
 import modules.util as util
 import modules.html_gui as html_gui
+import modules.GUI as GUI
 
 __author__ = "Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder"
 __credits__ = ["Kristen Amaddio", "Neal Kfoury", "Michael Nowakowski", "Adam Snyder"]
@@ -38,6 +39,10 @@ def main():
     Executes the Golden Globes program, which analyzes a set of tweets and outputs information about the event that
     they are describing.
     """
+    GUI.gui_run(None)
+    print util.event_name
+    print util.search_twitter_handles
+
     util.script_path = os.path.dirname(os.path.realpath(__file__))
     db = Database(cmd_line.args.database, cmd_line.args.collection, cmd_line.args.force_reload)
     result = Result()
@@ -46,7 +51,8 @@ def main():
     db.conn.close()
     result.print_results()
     output = result.print_output_file()
-    html_gui.run(result)
+    if util.html_display:
+        html_gui.run(result)
     if cmd_line.args.run_autograder:
         autograder.main(output)
 

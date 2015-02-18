@@ -8,6 +8,7 @@ import datetime
 
 # -- FIELDS -- #
 
+html_display = True
 verbose = True  # if True, will FORCE print out of additional debug messages using vprint
 search_twitter_handles = False
 default_collection = '/Volumes/Navi/Users/flame2/Documents/Northwestern/Y3Q2/EECS 337/gg15mini.json'
@@ -18,7 +19,7 @@ output_path = None
 script_path = None
 host_threshold = 0.85
 winner_threshold = 0.545
-award_name_threshold = 0.25
+award_name_threshold = 0.3
 award_time_percentile = 0.1
 limit = 100  # Imposes limit on some tweet search processes
 common_words = list(nltk.corpus.stopwords.words('english'))
