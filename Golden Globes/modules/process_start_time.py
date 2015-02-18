@@ -14,6 +14,10 @@ def run(db, target, event, event_wait, limit=None):
     event_wait.wait()
     result = {}
     backup_time = db.collection.find_one()['timestamp_ms']
+    if type(backup_time) is long:
+            target.timestamp_format = 'long'
+    else:
+        target.timestamp_format = 'str'
     useful_tweets = db.collection.find({'text': regex.time})
     utc_zone = tz.gettz('UTC')
     i = 0

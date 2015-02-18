@@ -142,8 +142,10 @@ def read_winners(db, target):
     """Searches a database for winners, matches against some schema, and returns bins award titles with
     winner names as keys"""
     t = target.start_time
+    if target.timestamp_format == 'str':
+        t = str(t)
     cursor = db.collection.find({"text": regex.winners, 'retweeted_status': {'$exists': False},
-                                 'timestamp_ms': {'$gt': str(t)}})
+                                 'timestamp_ms': {'$gt': t}})
     winner_bins = {}
     for tweet in cursor:
         tweet_time = int(tweet['timestamp_ms'])
