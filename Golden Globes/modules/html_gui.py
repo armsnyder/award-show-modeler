@@ -75,13 +75,12 @@ def html_cleanup(html):
 def html_done(html):
     filename = util.get_path('$r/output/result.html')
     with open(filename, 'w') as html_file:
-        html_file.write(html)
+        html_file.write(html.encode('utf8'))
     webbrowser.open_new(filename)
 
 
 def find_image(name):
     newname = name.replace(" ", "%20")
-    print(newname)
     url = ('https://ajax.googleapis.com/ajax/services/search/images?' +
            'v=1.0' + '&q=' + newname)
     try:
