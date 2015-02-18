@@ -11,12 +11,12 @@ The main executable file is goldenglobes.py. In separate threads, it calls other
 #### Optional Arguments
 - **-h**, --help: Show this help message and exit
 - **-v**, --verbose: Show additional system messages
-- **-d**, --DATABASE: Mongo database where tweets live
-- **-c**, --COLLECTION: Specify which Mongo collection to load
-- **-t** --TWITTER_JSON: JSON file holding tweet objects; if specified, will attempt to load the JSON objects therein contained into a collection by the same name
+- **-d**, --database: Mongo database where tweets live
+- **-c**, --collection: Specify which Mongo collection to load
+- **-t** --twitter_json: JSON file holding tweet objects; if specified, will attempt to load the JSON objects therein contained into a collection by the same name
 - **-f**, --force_reload: Force reloading tweets JSON into mongoDB
 - **-a**, --twitter_handles: Match twitter handles to names (requires Internet connection, takes longer)
-- **-o**, --OUTPUT: FIle path destination for output JSON file for the autograder
+- **-o**, --output: FIle path destination for output JSON file for the autograder
 - **-g**, --run_autograder: Automatically launch the autograder when finished
 
 #### Libraries Used
