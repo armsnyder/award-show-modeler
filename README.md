@@ -1,4 +1,4 @@
-# Golden Globes
+# Award Show Modeler
 ## Discovers and models information about an awards ceremony by processing tweets
 Authors: Kristen Amaddio, Neal Kfoury, Michael Nowakowski, and Adam Snyder  
 Northwestern University  
